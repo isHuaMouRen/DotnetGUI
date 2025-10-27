@@ -89,7 +89,7 @@ namespace DotnetGUI
                         UIConfig = new JsonConfig.Config.UIConfig
                         {
                             WindowSize = new Size(800, 450),
-                            SelectPage = 0
+                            SelectPage = "Home"
                         }
                     };
                     Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
@@ -101,6 +101,12 @@ namespace DotnetGUI
                 //应用
                 this.Width = Globals.GlobanConfig.UIConfig!.WindowSize.Width;
                 this.Height = Globals.GlobanConfig.UIConfig!.WindowSize.Height;
+
+                // --nav项
+                foreach(var item in navView.MenuItems)                
+                    if(item is NavigationViewItem currentItem)                    
+                        if (currentItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
+                            navView.SelectedItem = currentItem;                                   
                 #endregion
 
 
@@ -134,6 +140,7 @@ namespace DotnetGUI
                         
 
                     
+
                 }
                 else
                     throw new Exception("非法的值");

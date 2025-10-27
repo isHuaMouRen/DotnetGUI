@@ -10,8 +10,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\cover.png" />
     <None Remove="Assets\icon.ico" />
     <None Remove="Assets\icon\icon.ico" />
+    <None Remove="Assets\icon\Icon512.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\cover.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\icon\Icon512.png">
+      <CopyToOutputDirectory></CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
   <ItemGroup>

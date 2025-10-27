@@ -11,7 +11,7 @@ namespace DotnetGUI.Class
     public static class Globals
     {
         public static string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static string ConfigPath = $"{ExecutePath}\\config";
+        public static string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
     }
 }

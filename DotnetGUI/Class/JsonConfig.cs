@@ -4,6 +4,8 @@ using System.Windows;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ModernWpf.Controls;
+using System.Windows.Controls;
 
 namespace DotnetGUI.Class
 {
@@ -19,7 +21,7 @@ namespace DotnetGUI.Class
             public class UIConfig
             {
                 public Size WindowSize { get; set; }
-                public int SelectPage { get; set; }
+                public string? SelectPage { get; set; }
             }
         }
     }
