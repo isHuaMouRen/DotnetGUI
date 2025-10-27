@@ -10,6 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\icon.ico" />
+    <None Remove="Assets\icon\icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\icon\icon.ico">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="HuaZisToolLib.NET" Version="2025.10.22.1" />
     <PackageReference Include="Markdig" Version="0.43.0" />
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
