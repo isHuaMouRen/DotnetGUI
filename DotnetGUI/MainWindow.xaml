@@ -1,0 +1,24 @@
+﻿<Window x:Class="DotnetGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DotnetGUI"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        mc:Ignorable="d"
+        Title="Dotnet GUI" Height="450" Width="800" ui:WindowHelper.UseModernWindowStyle="True" Loaded="Window_Loaded" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <ui:NavigationView x:Name="navView" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged">
+            <ui:NavigationView.MenuItems>
+                
+                <ui:NavigationViewItem x:Name="navViewItem_Home" Content="主页" Tag="Home">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:PathIcon Data="M240-200h120v-240h240v240h120v-360L480-740 240-560v360Zm-80 80v-480l320-240 320 240v480H520v-240h-80v240H160Zm320-350Z"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                
+            </ui:NavigationView.MenuItems>
+            <Frame x:Name="frame_Navv" NavigationUIVisibility="Hidden"/>
+        </ui:NavigationView>
+    </Grid>
+</Window>
