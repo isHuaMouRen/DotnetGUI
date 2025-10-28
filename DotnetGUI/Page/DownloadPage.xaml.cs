@@ -54,9 +54,9 @@ namespace DotnetGUI.Page
                             string SupportTime;
 
                             if (Globals.DotnetIndex.release_index[i].security)
-                                isSupport = "支持";
+                                isSupport = "受保护";
                             else
-                                isSupport = "不受支持";
+                                isSupport = "不受保护";
 
                             if (Globals.DotnetIndex.release_index[i].release_type == "lts")
                                 SupportTime = "长期支持";
@@ -87,7 +87,7 @@ namespace DotnetGUI.Page
 
             grid_Main.Effect = new BlurEffect { Radius = 10 };
             grid_Main.IsEnabled = false;
-        }
+         }
 
         public void EndLoad()
         {
@@ -114,10 +114,14 @@ namespace DotnetGUI.Page
         {
             try
             {
-                button_Download.IsEnabled = true;
-                label_Version.Content = ".NET " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].channel_version;
-                label_SubVersion.Content = "最新版本: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_release;
-                label_ReleaseDate.Content = "发布日期: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_version_date;
+                if (listBox.SelectedIndex >= 0)
+                {
+                    button_Download.IsEnabled = true;
+                    label_Version.Content = ".NET " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].channel_version;
+                    label_SubVersion.Content = "最新版本: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_release;
+                    label_ReleaseDate.Content = "发布日期: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_version_date;
+                }
+                
 
             }
             catch (Exception ex)

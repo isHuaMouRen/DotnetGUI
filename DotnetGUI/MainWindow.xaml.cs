@@ -49,6 +49,7 @@ namespace DotnetGUI
         #endregion
 
         #region Var
+        public int FrameNavigatCount = 0;
         #endregion
 
         #region Func
@@ -174,6 +175,26 @@ namespace DotnetGUI
             {
                 ErrorReportDialog.Show("发生错误", "在窗口改变大小时发生错误", ex);
             }
+        }
+
+        private void navView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        {
+            frame_Navv.GoBack();
+        }
+
+        private void frame_Navv_Navigated(object sender, NavigationEventArgs e)
+        {
+            if (frame_Navv.Content is Download_InfoPage)
+            {
+                navView.IsBackButtonVisible = NavigationViewBackButtonVisible.Visible;
+                navView.IsBackEnabled = true;
+            }
+            else
+            {
+                navView.IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
+                navView.IsBackEnabled = false;
+            }
+                
         }
     }
 }

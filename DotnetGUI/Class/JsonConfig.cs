@@ -90,6 +90,7 @@ namespace DotnetGUI.Class
 
             public class SdkInfo
             {
+                public string? version { get; set; }
                 public JsonConfig.DotnetVersionInfo.FileInfo[]? files { get; set; }
             }
 

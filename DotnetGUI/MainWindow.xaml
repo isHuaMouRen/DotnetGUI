@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Dotnet GUI" Height="450" Width="800" SizeChanged="Window_SizeChanged" WindowStartupLocation="CenterScreen" Icon="/Assets/icon/icon.ico">
     <Grid>
-        <ui:NavigationView x:Name="navView" IsBackButtonVisible="Collapsed" IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged">
+        <ui:NavigationView x:Name="navView" IsBackButtonVisible="Visible" IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged" BackRequested="navView_BackRequested" IsBackEnabled="True">
             <ui:NavigationView.MenuItems>
 
                 <ui:NavigationViewItem x:Name="navViewItem_Home" Content="主页" Tag="Home">
@@ -33,7 +33,7 @@
                 
             </ui:NavigationView.FooterMenuItems>
             
-            <Frame x:Name="frame_Navv" NavigationUIVisibility="Hidden"/>
+            <Frame x:Name="frame_Navv" NavigationUIVisibility="Hidden" Navigated="frame_Navv_Navigated"/>
         </ui:NavigationView>
     </Grid>
 </Window>
