@@ -70,7 +70,7 @@ namespace DotnetGUI.Page
                             Content = $"是否要将 {dialog.FolderName} 设为.NET工作目录",
                             PrimaryButtonText = "确定",
                             SecondaryButtonText = "重选",
-                            DefaultButton = ContentDialogButton.Primary
+                            DefaultButton = ContentDialogButton.Primary,
                         };
                         if (await dialog2.ShowAsync() == ContentDialogResult.Primary)
                             break;
