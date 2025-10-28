@@ -37,26 +37,26 @@ namespace DotnetGUI.Class
         {
             public class Root
             {
-                [JsonPropertyName("release-index")]
+                [JsonProperty("releases-index")]
                 public JsonConfig.DotnetDownloadIndex.VersionInfo[]? release_index { get; set; }
             }
 
             public class VersionInfo
             {
-                [JsonPropertyName("channel-version")]
+                [JsonProperty("channel-version")]
                 public string? channel_version { get; set; }
-                [JsonPropertyName("latest-release")]
+                [JsonProperty("latest-release")]
                 public string? latest_release { get; set; }
-                [JsonPropertyName("latest-release-date")]
+                [JsonProperty("latest-release-date")]
                 public string? latest_version_date { get; set; }
                 public bool security { get; set; }
-                [JsonPropertyName("latest-sdk")]
+                [JsonProperty("latest-sdk")]
                 public string? latest_sdk { get; set; }
                 public string? product { get; set; }
-                [JsonPropertyName("release-type")]
+                [JsonProperty("release-type")]
                 public string? release_type { get; set; }
-                [JsonPropertyName("release.json")]
-                public string? release_json { get; set; }
+                [JsonProperty("releases.json")]
+                public string? releases_json { get; set; }
             }
         }
 
@@ -64,25 +64,27 @@ namespace DotnetGUI.Class
         {
             public class Root
             {
-                [JsonPropertyName("channel-version")]
+                [JsonProperty("channel-version")]
                 public string? channel_version { get; set; }
-                [JsonPropertyName("latest-release")]
+                [JsonProperty("latest-release")]
                 public string? latest_release { get; set; }
-                [JsonPropertyName("latest-release-date")]
+                [JsonProperty("latest-release-date")]
                 public string? latest_version_date { get; set; }
-                [JsonPropertyName("latest-sdk")]
+                [JsonProperty("latest-sdk")]
                 public string? latest_sdk { get; set; }
                 public string? product { get; set; }
-                [JsonPropertyName("release-type")]
+                [JsonProperty("release-type")]
                 public string? release_type { get; set; }
+                public JsonConfig.DotnetVersionInfo.ReleaseInfo[]? releases { get; set; }
             }
 
             public class ReleaseInfo
             {
-                [JsonPropertyName("release-date")]
+                [JsonProperty("release-date")]
                 public string? release_date { get; set; }
-                [JsonPropertyName("release-version")]
+                [JsonProperty("release-version")]
                 public string? release_version { get; set; }
+                public bool security { get; set; }
                 public JsonConfig.DotnetVersionInfo.SdkInfo? sdk { get; set; }
             }
 

@@ -42,7 +42,10 @@ namespace DotnetGUI
         #region Obj
         //预加载Page
         public ModernWpf.Controls.Page _homePage = new HomePage();
+        public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
+
+        //frame转换
         #endregion
 
         #region Var
@@ -125,7 +128,7 @@ namespace DotnetGUI
             {
                 ErrorReportDialog.Show("发生错误", "在初始化程序时发生错误", ex);
             }
-        }
+        }        
         #endregion
 
         public MainWindow()
@@ -144,6 +147,8 @@ namespace DotnetGUI
                         frame_Navv.Navigate(_homePage);
                     else if (item == navViewItem_Settings)
                         frame_Navv.Navigate(_settingsPage);
+                    else if (item == navViewItem_Download)
+                        frame_Navv.Navigate(_downloadPage);
 
 
                     Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();

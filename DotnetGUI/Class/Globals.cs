@@ -13,5 +13,8 @@ namespace DotnetGUI.Class
         public static string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
+
+        public static JsonConfig.DotnetDownloadIndex.Root DotnetIndex = null!;
+        public static JsonConfig.DotnetVersionInfo.Root DotnetVersionInfo = null!;
     }
 }
