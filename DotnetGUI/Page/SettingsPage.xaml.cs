@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace DotnetGUI.Page
 {
     /// <summary>
-    /// HomePage.xaml 的交互逻辑
+    /// SettingsPage.xaml 的交互逻辑
     /// </summary>
-    public partial class HomePage : ModernWpf.Controls.Page
+    public partial class SettingsPage : Page
     {
-        public HomePage()
+        public SettingsPage()
         {
             InitializeComponent();
-        }
-
-        private void Page_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-
         }
     }
 }

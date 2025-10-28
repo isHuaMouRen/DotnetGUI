@@ -17,9 +17,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Assets\cover.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
     <Content Include="Assets\icon\Icon512.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Content>

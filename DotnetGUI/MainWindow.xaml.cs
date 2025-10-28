@@ -137,10 +137,10 @@ namespace DotnetGUI
                 {
                     if (item == navViewItem_Home)
                         frame_Navv.Navigate(_homePage);
-                        
 
-                    
 
+                    Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();
+                    Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
                 }
                 else
                     throw new Exception("非法的值");
@@ -148,6 +148,19 @@ namespace DotnetGUI
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在加载页面时发生错误", ex);
+            }
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            try
+            {
+                Globals.GlobanConfig!.UIConfig!.WindowSize = new Size(this.Width, this.Height);
+                Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "在窗口改变大小时发生错误", ex);
             }
         }
     }
