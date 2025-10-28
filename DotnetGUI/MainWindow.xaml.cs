@@ -42,6 +42,7 @@ namespace DotnetGUI
         #region Obj
         //预加载Page
         public ModernWpf.Controls.Page _homePage = new HomePage();
+        public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
         #endregion
 
         #region Var
@@ -106,7 +107,12 @@ namespace DotnetGUI
                 foreach(var item in navView.MenuItems)                
                     if(item is NavigationViewItem currentItem)                    
                         if (currentItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
-                            navView.SelectedItem = currentItem;                                   
+                            navView.SelectedItem = currentItem;
+                // --nav foot项
+                foreach (var footItem in navView.FooterMenuItems)
+                    if (footItem is NavigationViewItem currentFootItem)
+                        if (currentFootItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
+                            navView.SelectedItem = currentFootItem;
                 #endregion
 
 
@@ -124,11 +130,6 @@ namespace DotnetGUI
             Initialize();
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            
-        }
-
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             try
@@ -137,6 +138,8 @@ namespace DotnetGUI
                 {
                     if (item == navViewItem_Home)
                         frame_Navv.Navigate(_homePage);
+                    else if (item == navViewItem_Settings)
+                        frame_Navv.Navigate(_settingsPage);
 
 
                     Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();
