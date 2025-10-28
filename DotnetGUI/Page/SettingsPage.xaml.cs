@@ -61,7 +61,7 @@ namespace DotnetGUI.Page
                     Multiselect = false
                 };
                 while (true)
-                {                    
+                {
                     if (dialog.ShowDialog() == true)
                     {
                         var dialog2 = new ContentDialog
@@ -75,11 +75,15 @@ namespace DotnetGUI.Page
                         if (await dialog2.ShowAsync() == ContentDialogResult.Primary)
                             break;
                     }
+                    else
+                        break;
                 }
 
                 textBox_WorkingPath.Text = dialog.FolderName;
                 Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
                 Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+
+                DotnetManager.SetSettings();
             }
             catch (Exception ex)
             {

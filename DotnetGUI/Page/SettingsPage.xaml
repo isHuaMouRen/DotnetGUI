@@ -10,9 +10,15 @@
       Title="SettingsPage" Loaded="Page_Loaded">
 
     <Grid Background="White">
-        <Label Content="工作目录" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,17,0,0"/>
-        <TextBox x:Name="textBox_WorkingPath" IsReadOnly="True" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Margin="71,10,71,0"/>
-        <Button Content="浏览..." VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Click="Button_Click"/>
+        <TabControl x:Name="tabControl">
+            <TabItem Header=".NET设置">
+                <Grid Background="#FFFFFFFF">
+                    <Label Content="工作目录" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,17,0,0"/>
+                    <TextBox x:Name="textBox_WorkingPath" IsReadOnly="True" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Margin="71,10,71,0"/>
+                    <Button Content="浏览..." VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,10,10,0" Click="Button_Click"/>
+                </Grid>
+            </TabItem>
+        </TabControl>
 
     </Grid>
 </ui:Page>
