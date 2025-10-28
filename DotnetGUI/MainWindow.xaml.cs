@@ -91,6 +91,10 @@ namespace DotnetGUI
                         {
                             WindowSize = new Size(800, 450),
                             SelectPage = "Home"
+                        },
+                        DotnetConfig = new JsonConfig.Config.DotNetConfig
+                        {
+                            WorkingDirectory = $"{System.IO.Path.Combine(Globals.ExecutePath!, "Project")}"
                         }
                     };
                     Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);

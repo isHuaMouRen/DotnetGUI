@@ -16,12 +16,18 @@ namespace DotnetGUI.Class
             public class Root
             {
                 public JsonConfig.Config.UIConfig? UIConfig { get; set; }
+                public JsonConfig.Config.DotNetConfig? DotnetConfig { get; set; }
             }
 
             public class UIConfig
             {
                 public Size WindowSize { get; set; }
                 public string? SelectPage { get; set; }
+            }
+
+            public class DotNetConfig
+            {
+                public string? WorkingDirectory { get; set; }
             }
         }
     }
