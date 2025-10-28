@@ -41,6 +41,7 @@ namespace DotnetGUI.Page
                 using (var client = new HttpClient())
                 {
                     button_Download.IsEnabled = false;
+                    listBox.SelectedIndex = -1;
 
                     Globals.DotnetIndex = Json.ReadJson<JsonConfig.DotnetDownloadIndex.Root>(await client.GetStringAsync("https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json"));
 

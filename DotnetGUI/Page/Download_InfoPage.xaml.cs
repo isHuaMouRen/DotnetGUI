@@ -58,7 +58,6 @@ namespace DotnetGUI.Page
             {
                 using (var client = new HttpClient())
                 {
-                    MessageBox.Show(Globals.DotnetIndex.release_index[SelectIndex].releases_json);
                     Globals.DotnetVersionInfo = Json.ReadJson<JsonConfig.DotnetVersionInfo.Root>(await client.GetStringAsync(Globals.DotnetIndex.release_index[SelectIndex].releases_json));
                     
                     listBox.Items.Clear();
