@@ -43,11 +43,10 @@ namespace DotnetGUI
         //预加载Page
         public ModernWpf.Controls.Page _homePage = new HomePage();
         public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
+        public ModernWpf.Controls.Page _aboutPage = new AboutPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
-
-        //frame转换
         #endregion
-
+        
         #region Var
         public int FrameNavigatCount = 0;
         #endregion
@@ -146,10 +145,16 @@ namespace DotnetGUI
                 {
                     if (item == navViewItem_Home)
                         frame_Navv.Navigate(_homePage);
-                    else if (item == navViewItem_Settings)
-                        frame_Navv.Navigate(_settingsPage);
+
                     else if (item == navViewItem_Download)
                         frame_Navv.Navigate(_downloadPage);
+
+                    else if (item == navViewItem_About)
+                        frame_Navv.Navigate(_aboutPage);
+
+                    else if (item == navViewItem_Settings)
+                        frame_Navv.Navigate(_settingsPage);
+                    
 
 
                     Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();

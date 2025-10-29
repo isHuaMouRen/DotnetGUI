@@ -1,0 +1,44 @@
+﻿<ui:Page x:Class="DotnetGUI.Page.AboutPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:DotnetGUI.Page"
+      xmlns:ui="http://schemas.modernwpf.com/2019"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="AboutPage">
+
+    <Grid Background="White" Cursor="Hand">
+        <Canvas Width="100" Height="100" VerticalAlignment="Top" Margin="20,20,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleX="0.1" ScaleY="0.1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform X="-50" Y="-50"/>
+                </TransformGroup>
+            </Canvas.RenderTransform>
+            <Path Fill="#512bd4"
+          Data="m 217.5,-0.5 h 588 c 89.266,11.529 154.433,57.196 195.5,137 11.92,25.9 19.42,52.9 22.5,81 v 588 c -11.53,89.266 -57.196,154.433 -137,195.5 -25.9,11.92 -52.9,19.42 -81,22.5 h -588 C 128.234,1011.97 63.067,966.304 22,886.5 10.083,860.6 2.583,833.6 -0.5,805.5 v -588 C 11.029,128.234 56.696,63.067 136.5,22 162.4,10.083 189.4,2.583 217.5,-0.5 Z"/>
+            <Path Fill="#fefefe"
+          Data="m 452.5,347.5 v 322 h -58 a 44602.353,44602.353 0 0 0 -152.5,-236 365.497,365.497 0 0 1 -10,-19 c 0.489,85.292 0.656,170.625 0.5,256 h -51 v -323 a 985.248,985.248 0 0 1 62.5,1 48977.864,48977.864 0 0 1 160,251 11115.12,11115.12 0 0 1 -1.5,-252 z"/>
+            <Path Fill="#fefefe"
+          Data="m 524.5,347.5 h 172 v 45 h -120 a 2117.57,2117.57 0 0 0 1,92 h 110 v 45 h -110 a 2304.214,2304.214 0 0 0 -1,96 h 127 v 44 h -179 z m 435,45 h -92 v 278 h -53 v -277 h -92 v -46 h 237 z"/>
+            <Path Fill="#fcfcfe"
+          Data="m 88.5,614.5 c 19.285,-1.785 32.451,6.215 39.5,24 1.4,18.953 -7.1,31.12 -25.5,36.5 -19.218,2.422 -32.052,-5.412 -38.5,-23.5 -1.836,-19.002 6.33,-31.335 24.5,-37 z"/>
+            <Path Fill="#fdfdfe"
+          Data="m 455.5,708.5 c 0.327,9.515 -0.006,18.848 -1,28 -16.555,-7.526 -33.889,-10.026 -52,-7.5 -22.571,7.745 -34.238,23.578 -35,47.5 2.619,40.478 23.619,55.811 63,46 a 225.771,225.771 0 0 0 1,-30 h -30 v -25 h 61 v 73 c -20.928,9.587 -42.928,13.087 -66,10.5 -34.57,-4.569 -54.736,-24.069 -60.5,-58.5 -5.236,-40.043 10.264,-68.543 46.5,-85.5 a 249.034,249.034 0 0 1 15,-4 289.106,289.106 0 0 1 34,0 104.676,104.676 0 0 1 24,5.5 z"/>
+            <Path Fill="#fefdfe"
+          Data="m 489.5,704.5 h 31 c -0.167,31.002 0,62.002 0.5,93 3.949,23.609 17.449,32.109 40.5,25.5 9.513,-4.833 14.68,-12.667 15.5,-23.5 0.5,-31.665 0.667,-63.332 0.5,-95 h 31 c 0.167,30.335 0,60.668 -0.5,91 -2.813,38.002 -23.313,56.669 -61.5,56 -34.693,-0.52 -53.526,-18.187 -56.5,-53 -0.5,-31.332 -0.667,-62.665 -0.5,-94 z"/>
+            <Path Fill="#fdfdfe"
+          Data="m 640.5,704.5 h 31 v 145 h -31 z"/>
+        </Canvas>
+        <Label Content=".NET GUI" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130,20,0,0" FontSize="25" FontWeight="Bold"/>
+        <Label Content=".NET SDK可视化命令面板" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130,57,0,0" FontSize="14"/>
+        <Label Content="Copyright ©️ isHuaMouRen 版权所有" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontSize="14" Margin="10,0,0,10"/>
+        <ui:HyperlinkButton Content="作者 Github isHuaMouRen" Margin="20,130,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/isHuaMouRen"/>
+        <ui:HyperlinkButton Content="储存库 Github Dotnet GUI" Margin="20,161,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/isHuaMouRen/DotnetGUI"/>
+        <ui:HyperlinkButton Content="UI库 Github ModernWPFUI" Margin="20,192,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/Kinnara/ModernWpf"/>
+    </Grid>
+</ui:Page>
