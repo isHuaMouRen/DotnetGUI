@@ -53,19 +53,36 @@ namespace DotnetGUI
         #endregion
 
         #region Func
-        public async void Initialize()
+        public void Initialize()
         {
             try
             {
-                #region 启动参数检测
+                /*#region 启动参数检测
                 string[] args = Environment.GetCommandLineArgs();
                 bool isShellLaunch = false;
+                bool isUpdate = false;
                 
                 foreach(var arg in args)
                 {
-                    if (arg == "-shell")
-                        isShellLaunch = true;
+                    switch (arg)
+                    {
+                        case "-shell":
+                            isShellLaunch = true;
+                            break;
+                        case "-update":
+                            isUpdate = true;
+                            break;
+                    }                    
                 }
+
+                if (isUpdate)
+                    await new ContentDialog
+                    {
+                        Title = $"已更新至 {Globals.AppVersion}",
+                        Content = "已更新到最新版本",
+                        PrimaryButtonText = "完成",
+                        DefaultButton = ContentDialogButton.Primary
+                    }.ShowAsync();
 
                 if (!Debugger.IsAttached)
                 {
@@ -80,10 +97,11 @@ namespace DotnetGUI
                             DefaultButton = ContentDialogButton.Primary
                         };
                         if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                            Environment.Exit(0);
+                            //Environment.Exit(0);
+                            MessageBox.Show("");
                     }
                 }
-                #endregion
+                #endregion*/
 
                 #region 读写配置
                 //如没有就写入

@@ -10,13 +10,15 @@ namespace DotnetGUI.Class
 {
     public static class Globals
     {
-        public static string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-        public static string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Indev 1.2.0.0";
-        public static string ConfigPath = $"{ExecutePath}\\config.json";
+        public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static readonly string? TempPath = Path.GetTempPath();
+        public static readonly string AppVersion = "Indev 1.3.0.0";
+        public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
 
         public static JsonConfig.DotnetDownloadIndex.Root DotnetIndex = null!;
         public static JsonConfig.DotnetVersionInfo.Root DotnetVersionInfo = null!;
+
+        public static readonly string UpdateRootUrl = "https://gitee.com/huamouren110/UpdateService/raw/main/DotnetGUI/";
     }
 }

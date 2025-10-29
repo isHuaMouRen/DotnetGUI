@@ -31,6 +31,7 @@
   <ItemGroup>
     <PackageReference Include="HuaZisToolLib.NET" Version="2025.10.22.1" />
     <PackageReference Include="Markdig" Version="0.43.0" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3537.50" />
     <PackageReference Include="ModernWpfUI" Version="0.9.6" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
   </ItemGroup>

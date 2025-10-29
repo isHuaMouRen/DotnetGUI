@@ -5,6 +5,7 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:ui="http://schemas.modernwpf.com/2019"
       xmlns:local="clr-namespace:DotnetGUI.Page"
+      xmlns:webview="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
       Title="SettingsPage" Loaded="Page_Loaded">
@@ -20,7 +21,14 @@
                     <Label x:Name="label_NETState" Content="等待检查..." HorizontalAlignment="Left" VerticalAlignment="Top" Margin="151,53,0,0"/>
                 </Grid>
             </TabItem>
-        </TabControl>
+            <TabItem Header="程序设置">
+                <Grid Background="White">
+                    <Button x:Name="button_CheckUpdate" Content="检查更新" Margin="10,10,0,0" VerticalAlignment="Top" Click="button_CheckUpdate_Click"/>
 
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <ui:ProgressRing x:Name="progressRing_Loading" IsActive="True" Width="50" Height="50" Visibility="Hidden"/>
+        <Label x:Name="label_Loading" Content="加载中..." HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0" Visibility="Hidden"/>
     </Grid>
 </ui:Page>

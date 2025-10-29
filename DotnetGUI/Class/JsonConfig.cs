@@ -102,5 +102,15 @@ namespace DotnetGUI.Class
                 public string? hash { get; set; }
             }
         }
+
+        public class UpdateIndex
+        {
+            public class Root
+            {
+                public string? latest_version { get; set; }
+                public string? changelog { get; set; }
+                public string? url { get; set; }
+            }
+        }
     }
 }
