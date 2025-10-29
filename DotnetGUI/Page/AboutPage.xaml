@@ -40,5 +40,6 @@
         <ui:HyperlinkButton Content="作者 Github isHuaMouRen" Margin="20,130,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/isHuaMouRen"/>
         <ui:HyperlinkButton Content="储存库 Github Dotnet GUI" Margin="20,161,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/isHuaMouRen/DotnetGUI"/>
         <ui:HyperlinkButton Content="UI库 Github ModernWPFUI" Margin="20,192,0,0" VerticalAlignment="Top" NavigateUri="https://github.com/Kinnara/ModernWpf"/>
+        <Label x:Name="label_Version" Content="Version" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="130,80,0,0" FontSize="14" Foreground="#FF646464"/>
     </Grid>
 </ui:Page>

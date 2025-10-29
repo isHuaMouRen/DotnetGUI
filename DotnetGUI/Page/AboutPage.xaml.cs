@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DotnetGUI.Class;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,6 +24,7 @@ namespace DotnetGUI.Page
         public AboutPage()
         {
             InitializeComponent();
+            label_Version.Content = Globals.AppVersion;
         }
     }
 }
