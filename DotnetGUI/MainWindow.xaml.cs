@@ -97,7 +97,8 @@ namespace DotnetGUI
                         },
                         DotnetConfig = new JsonConfig.Config.DotNetConfig
                         {
-                            WorkingDirectory = $"{System.IO.Path.Combine(Globals.ExecutePath!, "Project")}"
+                            WorkingDirectory = $"{System.IO.Path.Combine(Globals.ExecutePath!, "Project")}",
+                            DotnetState = null
                         }
                     };
                     Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);

@@ -30,6 +30,7 @@ namespace DotnetGUI.Class
             public class DotNetConfig
             {
                 public string? WorkingDirectory { get; set; }
+                public string? DotnetState { get; set; }
             }
         }
 

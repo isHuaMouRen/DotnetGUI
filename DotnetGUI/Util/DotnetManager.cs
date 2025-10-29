@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +19,13 @@ namespace DotnetGUI.Util
 			{
                 ErrorReportDialog.Show("发生错误", "在为.NET应用设置时发生错误", ex);
 			}
+        }
+
+        public static void CheckState()
+        {
+            
+            
+            
         }
     }
 }
