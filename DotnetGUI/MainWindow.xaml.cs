@@ -43,6 +43,7 @@ namespace DotnetGUI
         //预加载Page
         public ModernWpf.Controls.Page _homePage = new HomePage();
         public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
+        public ModernWpf.Controls.Page _consolePage = new ConsolePage();
         public ModernWpf.Controls.Page _aboutPage = new AboutPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
         #endregion
@@ -149,6 +150,9 @@ namespace DotnetGUI
 
                     else if (item == navViewItem_Download)
                         frame_Navv.Navigate(_downloadPage);
+
+                    else if (item == navViewItem_Console)
+                        frame_Navv.Navigate(_consolePage);
 
                     else if (item == navViewItem_About)
                         frame_Navv.Navigate(_aboutPage);
