@@ -12,7 +12,7 @@ namespace DotnetGUI.Class
     {
         public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Indev 1.4.0.0";
+        public static readonly string AppVersion = "Indev 1.5.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
 
