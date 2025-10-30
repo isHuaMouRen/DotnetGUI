@@ -116,5 +116,21 @@ namespace DotnetGUI.Page
                 textBox_Command.Text = null;
             }
         }
+
+        private void HelpButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(sender is Button btn)
+            {
+                if (btn == button_ShowHelp)
+                    SendCommand("-h");
+                else if (btn == button_ShowSDKandRt)
+                {
+                    SendCommand("--list-sdks"); SendCommand("--list-runtimes");
+                }
+            }
+            
+
+            
+        }
     }
 }

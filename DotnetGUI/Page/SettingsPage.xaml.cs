@@ -177,6 +177,43 @@ namespace DotnetGUI.Page
                     Globals.GlobanConfig.DotnetConfig.DotnetState = output;
                 }
 
+
+
+
+                process.StartInfo.Arguments = "--list-sdks";
+                process.Start();
+                output = process.StandardOutput.ReadToEnd();
+                error = process.StandardError.ReadToEnd();
+                await Task.Run(() => process.WaitForExit());
+
+                string sdkInfo;
+                if (string.IsNullOrEmpty(error))
+                    sdkInfo = output;
+                else
+                    sdkInfo = $"获取SDK信息时发生错误: {error}";
+
+
+                process.StartInfo.Arguments = "--list-runtimes";
+                process.Start();
+                output = process.StandardOutput.ReadToEnd();
+                error = process.StandardError.ReadToEnd();
+                await Task.Run(() => process.WaitForExit());
+
+                string runtimeInfo;
+                if (string.IsNullOrEmpty(error))
+                    runtimeInfo = output;
+                else
+                    runtimeInfo = $"获取SDK信息时发生错误: {error}";
+
+
+                await new ContentDialog
+                {
+                    Title = "SDK与Runtime信息",
+                    Content = $"可用的SDKs ({sdkInfo.Split(new[] { '\n' }).Length - 1}):\n    {sdkInfo}\n可用的Runtimes ({runtimeInfo.Split('\n').Length - 1}):\n    {runtimeInfo}",
+                    PrimaryButtonText = "确定",
+                    DefaultButton = ContentDialogButton.Primary
+                }.ShowAsync();
+
             }
             catch (Exception ex)
             {
