@@ -26,12 +26,13 @@
 
 
             <Label Content="语言:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,150,0,0" Height="32" VerticalContentAlignment="Center"/>
-            <Grid VerticalAlignment="Top" Margin="46,150,0,0" d:LayoutOverrides="VerticalAlignment" Height="32" HorizontalAlignment="Left" Width="256">
+            <Grid VerticalAlignment="Top" Margin="46,150,0,0" d:LayoutOverrides="VerticalAlignment" Height="32" HorizontalAlignment="Left">
                 <RadioButton x:Name="radioButton_CS" Content="C#" IsChecked="True"  d:LayoutOverrides="HorizontalAlignment"/>
-                <RadioButton x:Name="radioButton_VB" Content="Visual Basic" IsChecked="False" d:LayoutOverrides="LeftPosition, RightPosition" HorizontalAlignment="Center"/>
+                <RadioButton x:Name="radioButton_VB" Content="Visual Basic" IsChecked="False" d:LayoutOverrides="Width" HorizontalAlignment="Stretch" Margin="73,0,120,0"/>
                 <RadioButton x:Name="radioButton_FS" Content="F#" IsChecked="False" Margin="193,0,0,0"/>
+                <RadioButton x:Name="radioButton_None" Content="默认" IsChecked="False" Margin="253,0,0,0"/>
             </Grid>
-            <Label Content="要创建的模板的语言。 接受的语言因模板而异" VerticalAlignment="Top" Margin="307,150,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+            <Label Content="要创建的模板的语言。 接受的语言因模板而异" VerticalAlignment="Top" Margin="380,150,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment"/>
 
 
             <Label Content="项目名:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,187,0,0" Height="32" VerticalContentAlignment="Center"/>
@@ -42,9 +43,9 @@
             <Label Content="输出目录:  [工作目录]" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,224,0,0" VerticalContentAlignment="Center" Height="32"/>
             <Button x:Name="button_GoSettings" Content="前往设置" Margin="148,224,0,0" VerticalAlignment="Top" Height="32" Click="button_GoSettings_Click"/>
             <Label Content="用于放置生成的输出的位置。 默认为设置中的工作目录。" VerticalAlignment="Top" Margin="227,224,10,0" VerticalContentAlignment="Center" Foreground="#FF646464" Height="32"/>
-            
-            
-            <Button x:Name="button_Done" Content="  创建  " VerticalAlignment="Bottom" Margin="10,0,0,10" FontSize="14"/>
+
+
+            <Button x:Name="button_Done" Content="  创建  " VerticalAlignment="Bottom" Margin="10,0,0,10" FontSize="14" Click="button_Done_Click"/>
         </Grid>
         <ui:ProgressRing IsActive="True" x:Name="progressRing_Loading" Width="50" Height="50" Visibility="Hidden"/>
         <Label x:Name="label_Loading" Content="加载中" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0"/>

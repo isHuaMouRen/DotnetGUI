@@ -1,9 +1,12 @@
-﻿using DotnetGUI.Util;
+﻿using DotnetGUI.Class;
+using DotnetGUI.Util;
 using ModernWpf.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -151,6 +154,101 @@ namespace DotnetGUI.Page
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在尝试跳转 SettingsPage 发生错误", ex);
+            }
+        }
+
+        private async void button_Done_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                StartLoad();
+
+                string template = (string)((ComboBoxItem)comboBox_Template.SelectedItem).Tag;
+                bool isForce = toggleSwitch_Force.IsOn;
+                string? force = isForce ? "--force" : null;
+                string? language = radioButton_FS.IsChecked == true ? "-lang \"F#\"" :
+                                  radioButton_VB.IsChecked == true ? "-lang \"VB\"" :
+                                  radioButton_CS.IsChecked == true ? "-lang \"C#\"" : null;
+                string projName = textBox_Name.Text;
+                if (string.IsNullOrEmpty(projName)) throw new Exception("必须传入项目名");
+
+                string arg = $"{template} {force} {language} -n {projName} -o {Globals.GlobanConfig.DotnetConfig.WorkingDirectory}";
+
+
+                var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"new {arg}",
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    CreateNoWindow = true,
+                    StandardErrorEncoding = Encoding.UTF8,
+                    StandardOutputEncoding = Encoding.UTF8
+                });
+
+                string? line;
+                while ((line = await process.StandardOutput.ReadLineAsync()) != null)
+                    label_Loading.Content = line;
+
+
+                var error = new StringBuilder();
+                string? errorLine;
+                while ((errorLine = await process.StandardError.ReadLineAsync()) != null)
+                {
+                    error.AppendLine(errorLine);
+                }
+
+
+                await process.WaitForExitAsync();
+
+                string errorInfo = error.ToString();
+
+
+                if (string.IsNullOrEmpty(errorInfo))
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "执行完毕",
+                        Content = $"已在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"创建项目",
+                        PrimaryButtonText = "定位",
+                        CloseButtonText = "确定",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+                    if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+                else
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "执行完毕",
+                        Content = $"尝试在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"创建项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
+                        PrimaryButtonText = "确定",
+                        SecondaryButtonText = "定位",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+                    if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
+                            UseShellExecute = true
+                        });
+                    }
+                }
+
+                EndLoad();
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "在创建项目时发生错误", ex);
             }
         }
     }
