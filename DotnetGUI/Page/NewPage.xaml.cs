@@ -1,4 +1,5 @@
 ﻿using DotnetGUI.Util;
+using ModernWpf.Controls;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -136,6 +137,21 @@ namespace DotnetGUI.Page
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Initialize();
+        }
+
+        private void button_GoSettings_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (Window.GetWindow(this) is MainWindow mainWindow)
+                    if (mainWindow.FindName("navView") is NavigationView navView)
+                        if (navView.FindName("navViewItem_Settings") is NavigationViewItem navItem)
+                            navView.SelectedItem = navItem;
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "在尝试跳转 SettingsPage 发生错误", ex);
+            }
         }
     }
 }

@@ -13,13 +13,38 @@
         <Grid x:Name="grid_Main">
             <Label Content="New" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" FontSize="30" FontWeight="Bold"/>
             <Label Content="根据指定的模板，创建新的项目、配置文件或解决方案。" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,53,0,0" FontSize="14" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment"/>
-            
-            
+
+
             <Label Content="模板:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Height="32" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="comboBox_Template" HorizontalAlignment="Stretch" Margin="46,76,425,0" SelectedIndex="0"/>
-            <Label Content="调用命令时要实例化的模板。 每个模板可能具有可传递的特定选项" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="380,76,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+            <ComboBox x:Name="comboBox_Template" Margin="46,76,0,0" SelectedIndex="0" Width="329"/>
+            <Label Content="调用命令时要实例化的模板。 每个模板可能具有可传递的特定选项" VerticalAlignment="Top" Margin="380,76,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+
+
+            <Label Content="强制执行:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,113,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <ui:ToggleSwitch x:Name="toggleSwitch_Force" Margin="74,113,0,0" VerticalAlignment="Top" Width="101"/>
+            <Label Content="强制生成内容，即使会更改现有文件，也不例外。" VerticalAlignment="Top" Margin="180,113,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+
+
+            <Label Content="语言:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,150,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <Grid VerticalAlignment="Top" Margin="46,150,0,0" d:LayoutOverrides="VerticalAlignment" Height="32" HorizontalAlignment="Left" Width="256">
+                <RadioButton x:Name="radioButton_CS" Content="C#" IsChecked="True"  d:LayoutOverrides="HorizontalAlignment"/>
+                <RadioButton x:Name="radioButton_VB" Content="Visual Basic" IsChecked="False" d:LayoutOverrides="LeftPosition, RightPosition" HorizontalAlignment="Center"/>
+                <RadioButton x:Name="radioButton_FS" Content="F#" IsChecked="False" Margin="193,0,0,0"/>
+            </Grid>
+            <Label Content="要创建的模板的语言。 接受的语言因模板而异" VerticalAlignment="Top" Margin="307,150,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+
+
+            <Label Content="项目名:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,187,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="textBox_Name" Margin="60,187,0,0" TextWrapping="Wrap" Text="Project" VerticalAlignment="Top" HorizontalAlignment="Left" Width="315"/>
+            <Label Content="所创建的输出的名称。 如果未指定名称，使用的是当前目录的名称。" VerticalAlignment="Top" Margin="380,187,10,0" Height="32" VerticalContentAlignment="Center" Foreground="#FF646464"/>
+
+
+            <Label Content="输出目录:  [工作目录]" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,224,0,0" VerticalContentAlignment="Center" Height="32"/>
+            <Button x:Name="button_GoSettings" Content="前往设置" Margin="148,224,0,0" VerticalAlignment="Top" Height="32" Click="button_GoSettings_Click"/>
+            <Label Content="用于放置生成的输出的位置。 默认为设置中的工作目录。" VerticalAlignment="Top" Margin="227,224,10,0" VerticalContentAlignment="Center" Foreground="#FF646464" Height="32"/>
             
             
+            <Button x:Name="button_Done" Content="  创建  " VerticalAlignment="Bottom" Margin="10,0,0,10" FontSize="14"/>
         </Grid>
         <ui:ProgressRing IsActive="True" x:Name="progressRing_Loading" Width="50" Height="50" Visibility="Hidden"/>
         <Label x:Name="label_Loading" Content="加载中" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,80,0,0"/>
