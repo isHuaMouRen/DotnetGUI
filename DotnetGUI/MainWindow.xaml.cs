@@ -149,6 +149,59 @@ namespace DotnetGUI
                 ErrorReportDialog.Show("发生错误", "在初始化程序时发生错误", ex);
             }
         }        
+        
+        public async void LoadedInitialize()
+        {
+            try
+            {
+                #region 启动参数检查
+                string[] args = Environment.GetCommandLineArgs();
+                bool isShellExecute = false;
+                foreach (var arg in args)
+                {
+                    switch (arg)
+                    {
+                        case "-shell":
+                            isShellExecute = true;break;
+                    }
+                }
+
+                if (!isShellExecute && await new ContentDialog
+                    {
+                        Title = "提示",
+                        Content = "检测到没有使用Shell执行，推荐使用Shell执行",
+                        PrimaryButtonText = "退出",
+                        CloseButtonText = "忽略"
+                        ,
+                        DefaultButton = ContentDialogButton.Primary
+                    }.ShowAsync() == ContentDialogResult.Primary)
+                    Environment.Exit(0);
+                #endregion
+
+                #region .NET环境监测
+
+                var result = await DotnetManager.CheckState();
+                if (string.IsNullOrEmpty(result))
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "警告",
+                        Content = "检测到你电脑上没有安装.NET SDK，这将导致此软件的所有功能均无法使用!",
+                        PrimaryButtonText = "前往下载页",
+                        CloseButtonText = "忽略",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+                    if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                        navView.SelectedItem = navViewItem_Download;
+                }
+
+                #endregion
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "在加载后初始化时发生错误", ex);
+            }
+        }
         #endregion
 
         public MainWindow()
@@ -157,26 +210,35 @@ namespace DotnetGUI
             Initialize();
         }
 
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            LoadedInitialize();
+        }
+
         private void NavigationView_SelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
             try
             {
                 if (navView.SelectedItem is NavigationViewItem item)
                 {
+                    //Home
                     if (item == navViewItem_Home)
                         frame_Navv.Navigate(_homePage);
-
+                    //Download
                     else if (item == navViewItem_Download)
                         frame_Navv.Navigate(_downloadPage);
-
+                    //Console
                     else if (item == navViewItem_Console)
                         frame_Navv.Navigate(_consolePage);
 
+                    //About
                     else if (item == navViewItem_About)
                         frame_Navv.Navigate(_aboutPage);
-
+                    //Settings
                     else if (item == navViewItem_Settings)
                         frame_Navv.Navigate(_settingsPage);
+                    else
+                        throw new Exception("内部错误: 不存在的NavView项");
                     
 
 

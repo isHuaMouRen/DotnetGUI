@@ -48,18 +48,6 @@ namespace DotnetGUI.Page
             {              
                 //workDirectory
                 textBox_WorkingPath.Text = Globals.GlobanConfig.DotnetConfig.WorkingDirectory;
-                //dotnetState
-                if (string.IsNullOrEmpty(Globals.GlobanConfig.DotnetConfig.DotnetState))
-                {
-                    label_NETState.Foreground = new SolidColorBrush(Color.FromRgb(0, 0, 0));
-                    label_NETState.Content = "等待检查...";
-                }
-                else
-                {
-                    label_NETState.Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 100));
-                    label_NETState.Content = $".NET SDK可用!  当前SDK: .NET {Globals.GlobanConfig.DotnetConfig.DotnetState}";
-                }
-
             }
             catch (Exception ex)
             {
@@ -112,17 +100,18 @@ namespace DotnetGUI.Page
                             DefaultButton = ContentDialogButton.Primary,
                         };
                         if (await dialog2.ShowAsync() == ContentDialogResult.Primary)
+                        {
+                            textBox_WorkingPath.Text = dialog.FolderName;
+                            Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
+                            Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
                             break;
+                        }
                     }
                     else
                         break;
                 }
 
-                textBox_WorkingPath.Text = dialog.FolderName;
-                Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
-                Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
-
-                DotnetManager.SetSettings();
+                
             }
             catch (Exception ex)
             {
@@ -136,90 +125,72 @@ namespace DotnetGUI.Page
             Initialize();
         }
 
-        //dotnetState
         private async void button_CheckNET_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                label_NETState.Content = "检测中...";
-
+                StartLoad();
                 var process = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "dotnet",
-                        Arguments = "--version",
                         UseShellExecute = false,
-                        RedirectStandardOutput = true,
                         RedirectStandardError = true,
+                        RedirectStandardOutput = true,
                         CreateNoWindow = true
                     }
                 };
-                process.Start();
-                string output = process.StandardOutput.ReadToEnd();
-                string error = process.StandardError.ReadToEnd();
-
-                await Task.Run(() => process.WaitForExit());
-
-                Console.WriteLine(".NET Output:");
-                Console.WriteLine(output);
-
-                if (!string.IsNullOrEmpty(error))
-                {
-                    label_NETState.Foreground = new SolidColorBrush(Color.FromRgb(255, 100, 100));
-                    label_NETState.Content = $".NET SDK不可用！";
-                }
-                else
-                {
-                    label_NETState.Foreground = new SolidColorBrush(Color.FromRgb(100, 255, 100));
-                    label_NETState.Content = $".NET SDK可用!  当前SDK: .NET {output}";
-
-                    Globals.GlobanConfig.DotnetConfig.DotnetState = output;
-                }
-
-
-
 
                 process.StartInfo.Arguments = "--list-sdks";
                 process.Start();
-                output = process.StandardOutput.ReadToEnd();
-                error = process.StandardError.ReadToEnd();
-                await Task.Run(() => process.WaitForExit());
-
-                string sdkInfo;
-                if (string.IsNullOrEmpty(error))
-                    sdkInfo = output;
-                else
-                    sdkInfo = $"获取SDK信息时发生错误: {error}";
+                var sdkOutputTask = process.StandardOutput.ReadToEndAsync();
+                var sdkErrorTask = process.StandardError.ReadToEndAsync();
+                await Task.WhenAll(sdkOutputTask, sdkErrorTask);
+                process.WaitForExit();
+                string sdkInfo = sdkErrorTask.Result;
+                if (string.IsNullOrEmpty(sdkInfo))
+                    sdkInfo = sdkOutputTask.Result;
 
 
                 process.StartInfo.Arguments = "--list-runtimes";
                 process.Start();
-                output = process.StandardOutput.ReadToEnd();
-                error = process.StandardError.ReadToEnd();
-                await Task.Run(() => process.WaitForExit());
+                var runtimeOutputTask = process.StandardOutput.ReadToEndAsync();
+                var runtimeErrorTask = process.StandardError.ReadToEndAsync();
+                await Task.WhenAll(runtimeOutputTask, runtimeErrorTask);
+                process.WaitForExit();
+                string runtimeInfo = runtimeErrorTask.Result;
+                if (string.IsNullOrEmpty(runtimeInfo))
+                    runtimeInfo = runtimeOutputTask.Result;
 
-                string runtimeInfo;
-                if (string.IsNullOrEmpty(error))
-                    runtimeInfo = output;
-                else
-                    runtimeInfo = $"获取SDK信息时发生错误: {error}";
+
+                process.StartInfo.Arguments = "--version";
+                process.Start();
+                var versionOutputTask = process.StandardOutput.ReadToEndAsync();
+                var versionErrorTask = process.StandardError.ReadToEndAsync();
+                await Task.WhenAll(versionOutputTask, versionErrorTask);
+                process.WaitForExit();
+                string versionInfo = versionErrorTask.Result;
+                if (string.IsNullOrEmpty(versionInfo))
+                    versionInfo = versionOutputTask.Result;
 
 
                 await new ContentDialog
                 {
-                    Title = "SDK与Runtime信息",
-                    Content = $"可用的SDKs ({sdkInfo.Split(new[] { '\n' }).Length - 1}):\n    {sdkInfo}\n可用的Runtimes ({runtimeInfo.Split('\n').Length - 1}):\n    {runtimeInfo}",
+                    Title = "Result",
+                    Content = $"当前SDK:\n  {versionInfo}\n可用SDK ({sdkInfo.Split('\n').Length - 1}):\n  {sdkInfo}\n可用Runtime ({runtimeInfo.Split('\n').Length - 1}):\n  {runtimeInfo}",
                     PrimaryButtonText = "确定",
                     DefaultButton = ContentDialogButton.Primary
                 }.ShowAsync();
-
+                EndLoad();
             }
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "检查.NET SDK状态时发生错误", ex);
             }
         }
+
+
 
         // 检查更新
         private async void button_CheckUpdate_Click(object sender, RoutedEventArgs e)
