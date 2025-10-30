@@ -44,6 +44,8 @@ namespace DotnetGUI
         public ModernWpf.Controls.Page _homePage = new HomePage();
         public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
         public ModernWpf.Controls.Page _consolePage = new ConsolePage();
+        public ModernWpf.Controls.Page _newPage = new NewPage();
+
         public ModernWpf.Controls.Page _aboutPage = new AboutPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
         #endregion
@@ -230,6 +232,9 @@ namespace DotnetGUI
                     //Console
                     else if (item == navViewItem_Console)
                         frame_Navv.Navigate(_consolePage);
+                    //New
+                    else if (item == navViewItem_New)
+                        frame_Navv.Navigate(_newPage);
 
                     //About
                     else if (item == navViewItem_About)
