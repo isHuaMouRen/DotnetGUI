@@ -87,7 +87,8 @@ namespace DotnetGUI.Page
                     Title = "选择工作目录",
                     Multiselect = false
                 };
-                while (true)
+                bool isWhile = true;
+                while (isWhile)
                 {
                     if (dialog.ShowDialog() == true)
                     {
@@ -99,19 +100,18 @@ namespace DotnetGUI.Page
                             SecondaryButtonText = "重选",
                             DefaultButton = ContentDialogButton.Primary,
                         };
-                        if (await dialog2.ShowAsync() == ContentDialogResult.Primary)
+                        await DialogManager.ShowDialogAsync(dialog2, (() =>
                         {
                             textBox_WorkingPath.Text = dialog.FolderName;
                             Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
                             Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
-                            break;
-                        }
+                            isWhile = false;
+                        }));
                     }
                     else
                         break;
                 }
 
-                
             }
             catch (Exception ex)
             {
@@ -175,13 +175,13 @@ namespace DotnetGUI.Page
                     versionInfo = versionOutputTask.Result;
 
 
-                await new ContentDialog
+                await DialogManager.ShowDialogAsync(new ContentDialog
                 {
                     Title = "Result",
                     Content = $"当前SDK:\n  {versionInfo}\n可用SDK ({sdkInfo.Split('\n').Length - 1}):\n  {sdkInfo}\n可用Runtime ({runtimeInfo.Split('\n').Length - 1}):\n  {runtimeInfo}",
                     PrimaryButtonText = "确定",
                     DefaultButton = ContentDialogButton.Primary
-                }.ShowAsync();
+                });
                 EndLoad();
             }
             catch (Exception ex)
@@ -215,16 +215,18 @@ namespace DotnetGUI.Page
                             CloseButtonText = "取消",
                             DefaultButton = ContentDialogButton.Primary
                         };
-
-                        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                        await DialogManager.ShowDialogAsync(dialog, (() =>
+                        {
                             Process.Start(new ProcessStartInfo
                             {
                                 FileName = indexFile.url,
                                 UseShellExecute = true
                             });
+                        }));
+
 
                         //web.NavigateToString($"<!DOCTYPE html>\r\n<html lang=\"zh_CN\">\r\n\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>*</title>\r\n    <style>\r\n        body {{\r\n            background-color: white;\r\n            color: black;\r\n            font-family: '微软雅黑', sans-serif;\r\n            transform: scale(0.8);\r\n            transform-origin: left top;\r\n            line-height: 0.8;\r\n        }}\r\n    </style>\r\n</head>\r\n\r\n<body>\r\n{Markdown.ToHtml(changelog)}\r\n</body>\r\n\r\n</html>");
-                        
+
                         /*if(await dialog.ShowAsync() == ContentDialogResult.Primary)
                         {
                             string? savePath = $"{System.IO.Path.Combine(Globals.TempPath!, "update.zip")}";
@@ -241,13 +243,13 @@ namespace DotnetGUI.Page
                         }*/
                     }
                     else
-                        await new ContentDialog
+                        await DialogManager.ShowDialogAsync(new ContentDialog
                         {
                             Title = "无可用更新",
                             Content = $"您已经是最新版 {Globals.AppVersion} , 无需更新！",
                             PrimaryButtonText = "确定",
                             DefaultButton = ContentDialogButton.Primary
-                        }.ShowAsync();
+                        });
 
                 }
                 EndLoad();

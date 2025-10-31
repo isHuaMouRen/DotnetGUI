@@ -8,7 +8,7 @@ namespace DotnetGUI.Util
     {
         private static bool isDialogShow = false;
 
-        public static async Task ShowDialogAsync(ContentDialog dialog, Action primaryCallback, Action secondaryCallback, Action closeCallback)
+        public static async Task ShowDialogAsync(ContentDialog dialog, Action? primaryCallback = null, Action? secondaryCallback = null, Action? closeCallback = null)
         {
             // 等待直到没有对话框显示
             await WaitForDialogToCloseAsync();
@@ -28,7 +28,7 @@ namespace DotnetGUI.Util
             }
         }
 
-        private static void HandleDialogResult(ContentDialogResult result, Action primaryCallback, Action secondaryCallback, Action closeCallback)
+        private static void HandleDialogResult(ContentDialogResult result, Action? primaryCallback, Action? secondaryCallback = null, Action? closeCallback = null)
         {
             if (result == ContentDialogResult.Primary)
                 primaryCallback();

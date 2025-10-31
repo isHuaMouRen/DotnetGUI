@@ -42,9 +42,7 @@ namespace DotnetGUI.Util
                 SecondaryButtonText = "终止",
                 DefaultButton = ContentDialogButton.Primary
             };
-            var result = await dialog.ShowAsync();
-            if (result == ContentDialogResult.Secondary)
-                Environment.Exit(1);
+            await DialogManager.ShowDialogAsync(dialog, null, (() => Environment.Exit(1)));
         }
     }
 }

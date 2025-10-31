@@ -59,7 +59,7 @@ namespace DotnetGUI.Page
                 #region 加载模板
                 comboBox_Template.Items.Clear();
 
-                
+
                 var psi = new ProcessStartInfo
                 {
                     FileName = "dotnet",
@@ -76,7 +76,7 @@ namespace DotnetGUI.Page
                 if (p.ExitCode != 0)
                     throw new Exception("dotnet new list 执行失败");
 
-                
+
                 var templates = new List<(string Name, string Short)>();
                 bool headerPassed = false;
                 foreach (var line in output.Split('\n'))
@@ -96,7 +96,7 @@ namespace DotnetGUI.Page
                     templates.Add((name, shorts.First()));
                 }
 
-                
+
                 var priority = new[] {
                 "控制台应用","类库","解决方案文件",
                 "WPF 应用程序","Windows 窗体应用",
@@ -108,7 +108,7 @@ namespace DotnetGUI.Page
                     .OrderBy(t => priority.Contains(t.Name) ? Array.IndexOf(priority, t.Name) : int.MaxValue)
                     .ThenBy(t => t.Name);
 
-                
+
                 comboBox_Template.Items.Clear();
                 foreach (var (name, shortName) in ordered)
                 {
@@ -215,14 +215,14 @@ namespace DotnetGUI.Page
                         CloseButtonText = "确定",
                         DefaultButton = ContentDialogButton.Primary
                     };
-                    if (await dialog.ShowAsync() == ContentDialogResult.Primary)
+                    await DialogManager.ShowDialogAsync(dialog, (() =>
                     {
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
                             UseShellExecute = true
                         });
-                    }
+                    }));
                 }
                 else
                 {
@@ -234,14 +234,14 @@ namespace DotnetGUI.Page
                         SecondaryButtonText = "定位",
                         DefaultButton = ContentDialogButton.Primary
                     };
-                    if (await dialog.ShowAsync() == ContentDialogResult.Secondary)
+                    await DialogManager.ShowDialogAsync(dialog, (() =>
                     {
                         Process.Start(new ProcessStartInfo
                         {
                             FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
                             UseShellExecute = true
                         });
-                    }
+                    }));
                 }
 
                 EndLoad();

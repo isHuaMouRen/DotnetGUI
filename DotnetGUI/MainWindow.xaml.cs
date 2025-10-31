@@ -124,26 +124,30 @@ namespace DotnetGUI
 
                 if (!Debugger.IsAttached)
                 {
-                    if (!isShellExecute && await new ContentDialog
+                    if (!isShellExecute)
                     {
-                        Title = "提示",
-                        Content = "检测到没有使用Shell执行，推荐使用Shell执行",
-                        PrimaryButtonText = "退出",
-                        CloseButtonText = "忽略"
-                        ,
-                        DefaultButton = ContentDialogButton.Primary
-                    }.ShowAsync() == ContentDialogResult.Primary)
-                        Environment.Exit(0);
+                        var dialog= new ContentDialog
+                        {
+                            Title = "提示",
+                            Content = "检测到没有使用Shell执行，推荐使用Shell执行",
+                            PrimaryButtonText = "退出",
+                            CloseButtonText = "忽略",
+                            DefaultButton = ContentDialogButton.Primary
+                        };
+                        await DialogManager.ShowDialogAsync(dialog, (() => Environment.Exit(0)));
+                    }
+                    
                 }
                 else
                 {
-                    await new ContentDialog
+                    var dialog = new ContentDialog
                     {
                         Title = "警告",
                         Content = "你正在使用自行构建的版本，再此版本出现的任何异常都不要去Github报告！",
                         PrimaryButtonText = "确定",
                         DefaultButton = ContentDialogButton.Primary
-                    }.ShowAsync();
+                    };
+                    await DialogManager.ShowDialogAsync(dialog);
                 }
                 #endregion
 
@@ -160,8 +164,7 @@ namespace DotnetGUI
                         CloseButtonText = "忽略",
                         DefaultButton = ContentDialogButton.Primary
                     };
-                    if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                        navView.SelectedItem = navViewItem_Download;
+                    await DialogManager.ShowDialogAsync(dialog, (() => navView.SelectedItem = navViewItem_Download));                        
                 }
 
                 #endregion

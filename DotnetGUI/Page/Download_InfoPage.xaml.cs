@@ -121,7 +121,7 @@ namespace DotnetGUI.Page
                     CloseButtonText = "取消",
                     DefaultButton = ContentDialogButton.Primary
                 };
-                if(await dialog.ShowAsync() == ContentDialogResult.Primary)
+                await DialogManager.ShowDialogAsync(dialog, (async () =>
                 {
                     string savePath = $"{Globals.TempPath}\\dotnet-sdk-win-x64.exe";
                     string? url = null;
@@ -129,7 +129,7 @@ namespace DotnetGUI.Page
 
                     for (int i = 0; i < Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files.Length; i++)
                     {
-                        if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].name == "dotnet-sdk-win-x64.exe") 
+                        if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].name == "dotnet-sdk-win-x64.exe")
                         {
                             url = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].url;
                             hash = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].hash;
@@ -194,39 +194,43 @@ namespace DotnetGUI.Page
 
                         if (process.ExitCode == 0)
                         {
-                            await new ContentDialog
+                            var dialog2 = new ContentDialog
                             {
                                 Title = "提示",
                                 Content = $"安装成功，程序正常退出(ExitCode: 0)",
                                 PrimaryButtonText = "完成",
                                 DefaultButton = ContentDialogButton.Primary
-                            }.ShowAsync();
+                            };
+                            await DialogManager.ShowDialogAsync(dialog2);
                         }
                         else
                         {
-                            await new ContentDialog
+                            var dialog2 = new ContentDialog
                             {
                                 Title = "提示",
                                 Content = $"程序非正常退出(ExitCode: {process.ExitCode})，如已经正常安装，那么可以忽略此提示",
                                 PrimaryButtonText = "完成",
                                 DefaultButton = ContentDialogButton.Primary
-                            }.ShowAsync();
+                            };
+                            await DialogManager.ShowDialogAsync(dialog2);
                         }
 
                         button_Cancel.Visibility = Visibility.Hidden;
                         EndLoad();
                     }
-                }
+                }));
+
             }
-            catch(OperationCanceledException)
+            catch (OperationCanceledException)
             {
-                await new ContentDialog
+                var dialog2 = new ContentDialog
                 {
                     Title = "提示",
                     Content = "下载已取消！",
                     PrimaryButtonText = "确定",
                     DefaultButton = ContentDialogButton.Primary
-                }.ShowAsync();
+                };
+                await DialogManager.ShowDialogAsync(dialog2);
 
                 button_Cancel.Visibility = Visibility.Hidden;
                 EndLoad();

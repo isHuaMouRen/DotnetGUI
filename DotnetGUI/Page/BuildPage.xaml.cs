@@ -81,10 +81,8 @@ namespace DotnetGUI.Page
                         navView.FindName("navViewItem_Settings") is NavigationViewItem settingsPage &&
                         navView.FindName("navViewItem_New") is NavigationViewItem newPage)
                     {
-                        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                            navView.SelectedItem = newPage;
-                        else
-                            navView.SelectedItem = settingsPage;
+                        await DialogManager.ShowDialogAsync(dialog, (() => navView.SelectedItem = newPage), (() => navView.SelectedItem = settingsPage), (() => navView.SelectedItem = settingsPage));
+
                     }
                     else
                         throw new Exception("未找到目标控件");
