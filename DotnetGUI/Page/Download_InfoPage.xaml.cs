@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Sockets;
 using System.Reflection.Metadata;
 using System.Security.Cryptography;
 using System.Text;
@@ -123,118 +124,85 @@ namespace DotnetGUI.Page
                 };
                 await DialogManager.ShowDialogAsync(dialog, (async () =>
                 {
-                    string savePath = $"{Globals.TempPath}\\dotnet-sdk-win-x64.exe";
-                    string? url = null;
-                    string? hash = null;
-
-                    for (int i = 0; i < Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files.Length; i++)
+                    try
                     {
-                        if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].name == "dotnet-sdk-win-x64.exe")
+                        string savePath = $"{Globals.TempPath}\\dotnet-sdk-win-x64.exe";
+                        string? url = null;
+                        string? hash = null;
+
+                        for (int i = 0; i < Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files.Length; i++)
                         {
-                            url = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].url;
-                            hash = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].hash;
-                        }
-                    }
-
-                    if (url == null || hash == null)
-                        throw new Exception("未寻找到目标安装程序");
-                    else
-                    {
-                        if (File.Exists(savePath))
-                            File.Delete(savePath);
-
-                        StartLoad();
-                        button_Cancel.Visibility = Visibility.Visible;
-                        await Downloader.DownloadFileAsync(url, savePath, ((p) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ..."; }), cts.Token);
-
-                        /*using (SHA256 sha256 = SHA256.Create())
-                        using (FileStream fileStream = new FileStream(savePath, FileMode.Open, FileAccess.Read))
-                        {
-                            byte[] hashBytes = sha256.ComputeHash(fileStream);
-
-                            StringBuilder hashStringBuilder = new StringBuilder();
-                            foreach (byte b in hashBytes)
+                            if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].name == "dotnet-sdk-win-x64.exe")
                             {
-                                hashStringBuilder.Append(b.ToString("x2"));
+                                url = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].url;
+                                hash = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].hash;
                             }
+                        }
 
-                            if (hashStringBuilder.ToString() != hash)
+                        if (url == null || hash == null)
+                            throw new Exception("未寻找到目标安装程序");
+                        else
+                        {
+                            if (File.Exists(savePath))
+                                File.Delete(savePath);
+
+                            StartLoad();
+                            button_Cancel.Visibility = Visibility.Visible;
+                            await Downloader.DownloadFileAsync(url, savePath, ((p) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ..."; }), cts.Token);
+
+                            label_Load.Content = "执行安装程序...";
+
+                            var process = new Process();
+                            process.StartInfo = new ProcessStartInfo
+                            {
+                                FileName = savePath,
+                                UseShellExecute = false,
+                                RedirectStandardOutput = true,
+                                RedirectStandardError = true
+                            };
+
+                            process.Start();
+                            await Task.Run(() => process.WaitForExit());
+
+                            if (process.ExitCode == 0)
                             {
                                 var dialog2 = new ContentDialog
                                 {
-                                    Title = "警告",
-                                    Content = $"文件效验未通过，可以尝试重新下载来解决此问题\n\n如果您不担心安全问题，那么可以直接执行后续步骤",
-                                    PrimaryButtonText = "重试",
-                                    CloseButtonText = "忽略",
+                                    Title = "提示",
+                                    Content = $"安装成功，程序正常退出(ExitCode: 0)",
+                                    PrimaryButtonText = "完成",
                                     DefaultButton = ContentDialogButton.Primary
                                 };
-                                if (await dialog2.ShowAsync() == ContentDialogResult.Primary)
+                                await DialogManager.ShowDialogAsync(dialog2);
+                            }
+                            else
+                            {
+                                var dialog2 = new ContentDialog
                                 {
-                                    EndLoad();
-                                    return;
-                                }
+                                    Title = "提示",
+                                    Content = $"程序非正常退出(ExitCode: {process.ExitCode})，如已经正常安装，那么可以忽略此提示",
+                                    PrimaryButtonText = "完成",
+                                    DefaultButton = ContentDialogButton.Primary
+                                };
+                                await DialogManager.ShowDialogAsync(dialog2);
                             }
 
-
-                        }*/
-
-                        label_Load.Content = "执行安装程序...";
-
-                        var process = new Process();
-                        process.StartInfo = new ProcessStartInfo
-                        {
-                            FileName = savePath,
-                            UseShellExecute = false,
-                            RedirectStandardOutput = true,
-                            RedirectStandardError = true
-                        };
-
-                        process.Start();
-                        await Task.Run(() => process.WaitForExit());
-
-                        if (process.ExitCode == 0)
-                        {
-                            var dialog2 = new ContentDialog
-                            {
-                                Title = "提示",
-                                Content = $"安装成功，程序正常退出(ExitCode: 0)",
-                                PrimaryButtonText = "完成",
-                                DefaultButton = ContentDialogButton.Primary
-                            };
-                            await DialogManager.ShowDialogAsync(dialog2);
+                            button_Cancel.Visibility = Visibility.Hidden;
+                            EndLoad();
                         }
-                        else
-                        {
-                            var dialog2 = new ContentDialog
-                            {
-                                Title = "提示",
-                                Content = $"程序非正常退出(ExitCode: {process.ExitCode})，如已经正常安装，那么可以忽略此提示",
-                                PrimaryButtonText = "完成",
-                                DefaultButton = ContentDialogButton.Primary
-                            };
-                            await DialogManager.ShowDialogAsync(dialog2);
-                        }
-
+                    }
+                    catch (OperationCanceledException)
+                    {
                         button_Cancel.Visibility = Visibility.Hidden;
                         EndLoad();
                     }
+                    catch (Exception ex)
+                    {
+                        ErrorReportDialog.Show("发生错误", "下载.NET发生错误", ex);
+                    }                    
                 }));
 
-            }
-            catch (OperationCanceledException)
-            {
-                var dialog2 = new ContentDialog
-                {
-                    Title = "提示",
-                    Content = "下载已取消！",
-                    PrimaryButtonText = "确定",
-                    DefaultButton = ContentDialogButton.Primary
-                };
-                await DialogManager.ShowDialogAsync(dialog2);
-
-                button_Cancel.Visibility = Visibility.Hidden;
-                EndLoad();
-            }
+            }            
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在下载.NET时发生错误", ex);
@@ -247,9 +215,17 @@ namespace DotnetGUI.Page
             button_Download.Content = $"下载 {Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].release_version}";
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            cts?.Cancel();
+            await DialogManager.ShowDialogAsync(new ContentDialog
+            {
+                Title = "提示",
+                Content = "确定取消下载?",
+                PrimaryButtonText = "确定",
+                SecondaryButtonText = "取消",
+                DefaultButton = ContentDialogButton.Primary
+            }, (() => cts?.Cancel()));
+            
         }
     }
 }

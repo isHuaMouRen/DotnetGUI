@@ -121,7 +121,7 @@ namespace DotnetGUI
                             isShellExecute = true; break;
                     }
                 }
-
+                
                 if (!Debugger.IsAttached)
                 {
                     if (!isShellExecute)
@@ -137,17 +137,6 @@ namespace DotnetGUI
                         await DialogManager.ShowDialogAsync(dialog, (() => Environment.Exit(0)));
                     }
                     
-                }
-                else
-                {
-                    var dialog = new ContentDialog
-                    {
-                        Title = "警告",
-                        Content = "你正在使用自行构建的版本，再此版本出现的任何异常都不要去Github报告！",
-                        PrimaryButtonText = "确定",
-                        DefaultButton = ContentDialogButton.Primary
-                    };
-                    await DialogManager.ShowDialogAsync(dialog);
                 }
                 #endregion
 

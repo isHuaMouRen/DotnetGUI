@@ -176,7 +176,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"已在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\\bin\"生成项目",
+                        Content = $"已在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"生成项目",
                         PrimaryButtonText = "定位",
                         CloseButtonText = "确定",
                         DefaultButton = ContentDialogButton.Primary
@@ -185,7 +185,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = System.IO.Path.Combine(Globals.GlobanConfig.DotnetConfig.WorkingDirectory!, "bin"),
+                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory!,
                             UseShellExecute = true
                         });
                     }));
@@ -195,7 +195,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"尝试在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\\bin\"生成项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
+                        Content = $"尝试在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"生成项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
                         PrimaryButtonText = "确定",
                         SecondaryButtonText = "定位",
                         DefaultButton = ContentDialogButton.Primary
@@ -204,7 +204,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = System.IO.Path.Combine(Globals.GlobanConfig.DotnetConfig.WorkingDirectory!,"bin"),
+                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory!,
                             UseShellExecute = true
                         });
                     }));
