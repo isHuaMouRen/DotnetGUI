@@ -16,10 +16,40 @@
 
 
             <Label Content="项目或解决方案:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,66,0,0" Height="32" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="comboBox_Proj" Margin="106,66,0,0" Width="284"/>
-            <Label Content="项目或解决方案:" VerticalAlignment="Top" Height="32" VerticalContentAlignment="Center" Margin="395,66,0,0" Foreground="#FF646464"/>
+            <ComboBox x:Name="comboBox_Proj" Margin="106,66,0,0" Width="351"/>
+            <Label Content="要作的项目或解决方案或 C# （基于文件的应用）文件。" VerticalAlignment="Top" Height="32" VerticalContentAlignment="Center" Margin="462,66,0,0" Foreground="#FF646464"/>
 
 
+            <Label Content="体系结构:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,103,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <ComboBox x:Name="comboBox_Arch" Margin="64,103,0,0" Width="393">
+                <ComboBoxItem Content="x64" Tag="x64"/>
+                <ComboBoxItem Content="x86" Tag="x86"/>
+                <ComboBoxItem Content="ARM64" Tag="arm64"/>
+            </ComboBox>
+            <Label Content="指定目标体系结构。" VerticalAlignment="Top" Height="32" VerticalContentAlignment="Center" Margin="462,103,0,0" Foreground="#FF646464"/>
+
+
+            <Label Content="生成配置:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,140,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <TextBox x:Name="textBox_Config" Margin="64,140,0,0" TextWrapping="Wrap" Text="Debug" HorizontalAlignment="Left" VerticalAlignment="Top" Width="266"/>
+            <Label Content="定义生成配置。大多数项目的默认配置为 Debug，但你可以覆盖项目中的生成配置设置。" VerticalAlignment="Top" Height="32" VerticalContentAlignment="Center" Margin="335,140,0,0" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment"/>
+
+
+            <Label Content="强制执行:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,177,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <ui:ToggleSwitch x:Name="toggleSwitch_Force" VerticalAlignment="Top" Margin="64,177,0,0"/>
+            <Label Content="强制解析所有依赖项，即使上次还原已成功，也不例外。 " VerticalAlignment="Top" Height="32" VerticalContentAlignment="Center" Margin="223,177,0,0" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment"/>
+
+
+            <Label Content="发布时携带运行时:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,214,0,0" VerticalContentAlignment="Center" Height="32"/>
+            <ui:ToggleSwitch x:Name="toggleSwitch_SelfCon" VerticalAlignment="Top" Margin="120,214,0,0" d:LayoutOverrides="Height"/>
+            <Label Content="生成应用程序时包含 .NET 运行时，不需要在目标计算机上安装运行时。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="279,214,0,0" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment" Height="32"/>
+
+
+            <Label Content="将当前运行时用作目标运行时:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,251,0,0" VerticalContentAlignment="Center" Height="32"/>
+            <ui:ToggleSwitch x:Name="toggleSwitch_Ucr" VerticalAlignment="Top" Margin="190,251,0,0"/>
+            <Label Content="将当前运行时用作目标运行时。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="349,251,0,0" Foreground="#FF646464" Height="32" d:LayoutOverrides="HorizontalAlignment"/>
+
+
+            <Button x:Name="button_Build" Content="  生成  " VerticalAlignment="Bottom" Click="button_Build_Click"/>
         </Grid>
         <ui:ProgressRing x:Name="progressRing_Loading" IsActive="True" Width="50" Height="50" Visibility="Hidden"/>
         <Label x:Name="label_Loading" HorizontalAlignment="Center" VerticalAlignment="Center" Content="加载中..." Margin="0,80,0,0" Visibility="Hidden"/>
