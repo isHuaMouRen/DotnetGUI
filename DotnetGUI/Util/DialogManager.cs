@@ -31,11 +31,11 @@ namespace DotnetGUI.Util
         private static void HandleDialogResult(ContentDialogResult result, Action? primaryCallback, Action? secondaryCallback = null, Action? closeCallback = null)
         {
             if (result == ContentDialogResult.Primary)
-                primaryCallback();
+                primaryCallback?.Invoke();
             else if (result == ContentDialogResult.Secondary)
-                secondaryCallback();
+                secondaryCallback?.Invoke();
             else
-                closeCallback();
+                closeCallback?.Invoke();
         }
     }
 }
