@@ -45,13 +45,13 @@ namespace DotnetGUI
         public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
         public ModernWpf.Controls.Page _consolePage = new ConsolePage();
         public ModernWpf.Controls.Page _newPage = new NewPage();
+        public ModernWpf.Controls.Page _buildPage = new BuildPage();
 
         public ModernWpf.Controls.Page _aboutPage = new AboutPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
         #endregion
-        
+
         #region Var
-        public int FrameNavigatCount = 0;
         #endregion
 
         #region Func
@@ -59,51 +59,6 @@ namespace DotnetGUI
         {
             try
             {
-                /*#region 启动参数检测
-                string[] args = Environment.GetCommandLineArgs();
-                bool isShellLaunch = false;
-                bool isUpdate = false;
-                
-                foreach(var arg in args)
-                {
-                    switch (arg)
-                    {
-                        case "-shell":
-                            isShellLaunch = true;
-                            break;
-                        case "-update":
-                            isUpdate = true;
-                            break;
-                    }                    
-                }
-
-                if (isUpdate)
-                    await new ContentDialog
-                    {
-                        Title = $"已更新至 {Globals.AppVersion}",
-                        Content = "已更新到最新版本",
-                        PrimaryButtonText = "完成",
-                        DefaultButton = ContentDialogButton.Primary
-                    }.ShowAsync();
-
-                if (!Debugger.IsAttached)
-                {
-                    if (!isShellLaunch)
-                    {
-                        var dialog = new ContentDialog
-                        {
-                            Title = "提示",
-                            Content = "检测到没有使用Shell运行，请运行外部的可执行文件。直接运行此程序可能会导致意想不到的后果",
-                            PrimaryButtonText = "退出",
-                            CloseButtonText = "忽略",
-                            DefaultButton = ContentDialogButton.Primary
-                        };
-                        if (await dialog.ShowAsync() == ContentDialogResult.Primary)
-                            //Environment.Exit(0);
-                            MessageBox.Show("");
-                    }
-                }
-                #endregion*/
 
                 #region 读写配置
                 //如没有就写入
@@ -133,8 +88,8 @@ namespace DotnetGUI
                 this.Height = Globals.GlobanConfig.UIConfig!.WindowSize.Height;
 
                 // --nav项
-                foreach(var item in navView.MenuItems)                
-                    if(item is NavigationViewItem currentItem)                    
+                foreach (var item in navView.MenuItems)
+                    if (item is NavigationViewItem currentItem)
                         if (currentItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
                             navView.SelectedItem = currentItem;
                 // --nav foot项
@@ -144,14 +99,13 @@ namespace DotnetGUI
                             navView.SelectedItem = currentFootItem;
                 #endregion
 
-
             }
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在初始化程序时发生错误", ex);
             }
-        }        
-        
+        }
+
         public async void LoadedInitialize()
         {
             try
@@ -164,11 +118,13 @@ namespace DotnetGUI
                     switch (arg)
                     {
                         case "-shell":
-                            isShellExecute = true;break;
+                            isShellExecute = true; break;
                     }
                 }
 
-                if (!isShellExecute && await new ContentDialog
+                if (!Debugger.IsAttached)
+                {
+                    if (!isShellExecute && await new ContentDialog
                     {
                         Title = "提示",
                         Content = "检测到没有使用Shell执行，推荐使用Shell执行",
@@ -177,7 +133,18 @@ namespace DotnetGUI
                         ,
                         DefaultButton = ContentDialogButton.Primary
                     }.ShowAsync() == ContentDialogResult.Primary)
-                    Environment.Exit(0);
+                        Environment.Exit(0);
+                }
+                else
+                {
+                    await new ContentDialog
+                    {
+                        Title = "警告",
+                        Content = "你正在使用自行构建的版本，再此版本出现的任何异常都不要去Github报告！",
+                        PrimaryButtonText = "确定",
+                        DefaultButton = ContentDialogButton.Primary
+                    }.ShowAsync();
+                }
                 #endregion
 
                 #region .NET环境监测
@@ -235,6 +202,9 @@ namespace DotnetGUI
                     //New
                     else if (item == navViewItem_New)
                         frame_Navv.Navigate(_newPage);
+                    //Build
+                    else if (item == navViewItem_Build)
+                        frame_Navv.Navigate(_buildPage);
 
                     //About
                     else if (item == navViewItem_About)
@@ -244,7 +214,7 @@ namespace DotnetGUI
                         frame_Navv.Navigate(_settingsPage);
                     else
                         throw new Exception("内部错误: 不存在的NavView项");
-                    
+
 
 
                     Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();
@@ -289,7 +259,7 @@ namespace DotnetGUI
                 navView.IsBackButtonVisible = NavigationViewBackButtonVisible.Collapsed;
                 navView.IsBackEnabled = false;
             }
-                
+
         }
     }
 }
