@@ -240,7 +240,7 @@ namespace DotnetGUI.Page
                             {
                                 FileName = System.IO.Path.Combine(Globals.ExecutePath!, "UpdateService.exe"),
                                 Arguments = $"-updatefile \"{savePath}\"",
-                                UseShellExecute = false
+                                UseShellExecute = true
                             });
                             Environment.Exit(0);
                         }
