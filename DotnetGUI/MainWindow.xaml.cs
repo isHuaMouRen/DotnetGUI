@@ -31,6 +31,7 @@ using System.Runtime.CompilerServices;
 using System.IO;
 using DotnetGUI.Class;
 using DotnetGUI.Page;
+using Microsoft.Win32;
 
 namespace DotnetGUI
 {
@@ -69,6 +70,7 @@ namespace DotnetGUI
                         UIConfig = new JsonConfig.Config.UIConfig
                         {
                             WindowSize = new Size(800, 450),
+                            isFirstUse = true
                         },
                         DotnetConfig = new JsonConfig.Config.DotNetConfig
                         {
@@ -157,6 +159,121 @@ namespace DotnetGUI
                         DefaultButton = ContentDialogButton.Primary
                     };
                     await DialogManager.ShowDialogAsync(dialog, (() => navView.SelectedItem = navViewItem_Download));
+                }
+
+                #endregion
+
+                #region OOBE
+
+                if (Globals.GlobanConfig!.UIConfig!.isFirstUse)
+                {
+                    bool isTutorialDone = false;
+                    int totalStep = 2;
+
+                    while (!isTutorialDone)
+                    {
+                        //欢迎
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = $"👋 欢迎!",
+                            Content = $"欢迎使用.NET GUI!\n我们为您准备了一套初始化流程，以便快速配置软件！",
+                            PrimaryButtonText = "下一步",
+                            DefaultButton = ContentDialogButton.Primary
+                        });
+
+                        //工作目录
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = $"💾 配置工作目录 (1/{totalStep})",
+                            Content = $"选择一个目录，作为您的工作目录，创建项目、生成和运行项目都将在此执行",
+                            PrimaryButtonText = "选择",
+                            DefaultButton = ContentDialogButton.Primary
+                        });
+                        bool isSelectDone = false;
+                        while (!isSelectDone)
+                        {
+                            var folderDialog = new OpenFolderDialog
+                            {
+                                Title = "选择一个目录",
+                                Multiselect = false
+                            };
+                            if (folderDialog.ShowDialog() == true)
+                            {
+                                if (Directory.Exists(folderDialog.FolderName))
+                                {
+                                    await DialogManager.ShowDialogAsync(new ContentDialog
+                                    {
+                                        Title = $"💾 配置工作目录 (1/{totalStep})",
+                                        Content = $"干得好！ \"{folderDialog.FolderName}\"真是一个完美的目录！让我们进行下一步",
+                                        PrimaryButtonText = "下一步",
+                                        DefaultButton = ContentDialogButton.Primary
+                                    });
+                                    Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
+                                    Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                                    isSelectDone = true;
+                                }
+                                else
+                                {
+                                    await DialogManager.ShowDialogAsync(new ContentDialog
+                                    {
+                                        Title = "❔ 提示",
+                                        Content = $"\"{folderDialog.FolderName}\" 似乎是一个空目录，您要？",
+                                        PrimaryButtonText = "创建目录并继续",
+                                        SecondaryButtonText = "重选",
+                                        DefaultButton = ContentDialogButton.Primary
+                                    }, (() =>
+                                    {
+                                        Directory.CreateDirectory(folderDialog.FolderName);
+                                        Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
+                                        Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                                        isSelectDone = true;
+                                    }));
+                                }
+                            }
+                            else
+                            {
+                                await DialogManager.ShowDialogAsync(new ContentDialog
+                                {
+                                    Title = "❔ 提示",
+                                    Content = $"您看起来并没有选择任何一个目录，如果不选择，程序将无法正常运行！",
+                                    PrimaryButtonText = "重选",
+                                    DefaultButton = ContentDialogButton.Primary
+                                });
+                            }
+                        }
+
+                        // .NET
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = $"🛠 配置.NET (2/{totalStep})",
+                            Content = $"接下来将要配置.NET SDK ，这是整个程序的核心，全部命令都要依赖.NET SDK\n\n你可以立即前往官网下载，也可以在初始化流程结束后到此软件的下载中心下载",
+                            PrimaryButtonText = "下一步",
+                            SecondaryButtonText = "前往官网下载",
+                            DefaultButton = ContentDialogButton.Primary
+                        }, null, (() =>
+                        {
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = $"https://dotnet.microsoft.com/zh-cn/download",
+                                UseShellExecute = true
+                            });
+                        }));
+
+                        // 完成
+
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = $"🎉 恭喜！",
+                            Content = $"您已经完成了所有初始化流程！尽情享受吧！",
+                            PrimaryButtonText = "完成",
+                            DefaultButton = ContentDialogButton.Primary
+                        });
+
+                        Globals.GlobanConfig.UIConfig.isFirstUse = false;
+                        Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+
+                        isTutorialDone = true;
+                    }
                 }
 
                 #endregion
