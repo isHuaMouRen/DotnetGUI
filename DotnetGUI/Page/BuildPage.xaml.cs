@@ -59,7 +59,7 @@ namespace DotnetGUI.Page
 
                 #region 扫描项目文件
                 projFiles?.Clear();
-                ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
+                await ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
                 if (projFiles?.Count > 0)
                 {
                     comboBox_Proj.Items.Clear();
@@ -105,16 +105,19 @@ namespace DotnetGUI.Page
         }
 
         //遍历项目文件夹
-        public void ScanFile(string path)
+        public async Task ScanFile(string path)
         {
-            string[] files = Directory.GetFiles(path);
-            foreach (var file in files)
-                if (file.EndsWith("proj", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
-                    projFiles?.Add(file);
+            await Task.Run(async () =>
+            {
+                string[] files = Directory.GetFiles(path);
+                foreach (var file in files)
+                    if (file.EndsWith("proj", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
+                        projFiles?.Add(file);
 
-            string[] dirs = Directory.GetDirectories(path);
-            foreach (var dir in dirs)
-                ScanFile(dir);
+                string[] dirs = Directory.GetDirectories(path);
+                foreach (var dir in dirs)
+                    await ScanFile(dir);
+            });            
         }
         #endregion
 
