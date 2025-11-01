@@ -232,6 +232,17 @@ namespace DotnetGUI.Page
                                 File.Delete(savePath);
 
                             await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => label_Loading.Content = $"下载更新文件中 {Math.Round(pgs, 2)}% ..."), new CancellationToken());
+
+                            label_Loading.Content = $"下载更新文件成功, 即将重启...";
+                            await Task.Delay(2000);
+
+                            Process.Start(new ProcessStartInfo
+                            {
+                                FileName = System.IO.Path.Combine(Globals.ExecutePath!, "UpdateService.exe"),
+                                Arguments = $"-updatefile \"{savePath}\"",
+                                UseShellExecute = false
+                            });
+                            Environment.Exit(0);
                         }
                     }
                 }
