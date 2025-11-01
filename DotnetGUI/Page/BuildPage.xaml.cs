@@ -58,9 +58,9 @@ namespace DotnetGUI.Page
                 StartLoad();
 
                 #region 扫描项目文件
-                projFiles.Clear();
-                ScanFile(Globals.GlobanConfig.DotnetConfig.WorkingDirectory!);
-                if (projFiles.Count > 0)
+                projFiles?.Clear();
+                ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
+                if (projFiles?.Count > 0)
                 {
                     comboBox_Proj.Items.Clear();
                     foreach (var item in projFiles)
@@ -110,7 +110,7 @@ namespace DotnetGUI.Page
             string[] files = Directory.GetFiles(path);
             foreach (var file in files)
                 if (file.EndsWith("proj", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".sln", StringComparison.OrdinalIgnoreCase) || file.EndsWith(".slnx", StringComparison.OrdinalIgnoreCase))
-                    projFiles.Add(file);
+                    projFiles?.Add(file);
 
             string[] dirs = Directory.GetDirectories(path);
             foreach (var dir in dirs)
@@ -152,11 +152,11 @@ namespace DotnetGUI.Page
                     RedirectStandardOutput = true,
                     StandardErrorEncoding = Encoding.UTF8,
                     StandardOutputEncoding = Encoding.UTF8,
-                    WorkingDirectory = Globals.GlobanConfig.DotnetConfig.WorkingDirectory
+                    WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory
                 });
 
                 string? line;
-                while ((line = await process.StandardOutput.ReadLineAsync()) != null)
+                while ((line = await process!.StandardOutput.ReadLineAsync()) != null)
                     label_Loading.Content = line;
 
 

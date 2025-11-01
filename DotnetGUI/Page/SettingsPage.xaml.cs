@@ -47,7 +47,7 @@ namespace DotnetGUI.Page
             try
             {              
                 //workDirectory
-                textBox_WorkingPath.Text = Globals.GlobanConfig.DotnetConfig.WorkingDirectory;
+                textBox_WorkingPath.Text = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory;
             }
             catch (Exception ex)
             {
@@ -103,7 +103,7 @@ namespace DotnetGUI.Page
                         await DialogManager.ShowDialogAsync(dialog2, (() =>
                         {
                             textBox_WorkingPath.Text = dialog.FolderName;
-                            Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
+                            Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory = dialog.FolderName;
                             Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
                             isWhile = false;
                         }));
@@ -198,60 +198,44 @@ namespace DotnetGUI.Page
             try
             {
                 StartLoad();
-                using (var client = new HttpClient())
+
+                using (var client = new HttpClient()) 
                 {
-                    string indexUrl = $"{Globals.UpdateRootUrl}latest.json";
-                    JsonConfig.UpdateIndex.Root indexFile = Json.ReadJson<JsonConfig.UpdateIndex.Root>(await client.GetStringAsync(indexUrl));
+                    JsonConfig.UpdateIndex.Root updateIndex = Json.ReadJson<JsonConfig.UpdateIndex.Root>(await client.GetStringAsync($"{Globals.UpdateRootUrl}latest.json"));
 
-                    if (indexFile.latest_version != Globals.AppVersion)
+                    if (updateIndex.latest_version == Globals.AppVersion)
                     {
-                        //webView.CoreWebView2.NavigateToString($"<!DOCTYPE html>\r\n<html lang=\"zh_CN\">\r\n\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>*</title>\r\n    <style>\r\n        body {{\r\n            background-color: white;\r\n            color: black;\r\n            font-family: '微软雅黑', sans-serif;\r\n            transform: scale(0.8);\r\n            transform-origin: left top;\r\n            line-height: 0.5;\r\n        }}\r\n    </style>\r\n</head>\r\n\r\n<body>\r\n{Markdown.ToHtml(changelog)}    \r\n</body>\r\n\r\n</html>");
-
-                        var dialog = new ContentDialog
-                        {
-                            Title = $"可更新至 {indexFile.latest_version}",
-                            Content = "是否前往下载",
-                            PrimaryButtonText = "前往",
-                            CloseButtonText = "取消",
-                            DefaultButton = ContentDialogButton.Primary
-                        };
-                        await DialogManager.ShowDialogAsync(dialog, (() =>
-                        {
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = indexFile.url,
-                                UseShellExecute = true
-                            });
-                        }));
-
-
-                        //web.NavigateToString($"<!DOCTYPE html>\r\n<html lang=\"zh_CN\">\r\n\r\n<head>\r\n    <meta charset=\"UTF-8\">\r\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\r\n    <title>*</title>\r\n    <style>\r\n        body {{\r\n            background-color: white;\r\n            color: black;\r\n            font-family: '微软雅黑', sans-serif;\r\n            transform: scale(0.8);\r\n            transform-origin: left top;\r\n            line-height: 0.8;\r\n        }}\r\n    </style>\r\n</head>\r\n\r\n<body>\r\n{Markdown.ToHtml(changelog)}\r\n</body>\r\n\r\n</html>");
-
-                        /*if(await dialog.ShowAsync() == ContentDialogResult.Primary)
-                        {
-                            string? savePath = $"{System.IO.Path.Combine(Globals.TempPath!, "update.zip")}";
-
-                            await Downloader.DownloadFileAsync(indexFile.url!, savePath, ((p) => { label_Loading.Content = $"下载中 {Math.Round(p, 2)}% ..."; }), new CancellationToken());
-
-                            Process.Start(new ProcessStartInfo
-                            {
-                                FileName = System.IO.Path.Combine(Directory.GetParent(Globals.ExecutePath!).FullName, "DotnetGUI.exe"),
-                                Arguments = $"-updatefile {savePath}",
-                                UseShellExecute = true
-                            });
-                            Environment.Exit(0);
-                        }*/
-                    }
-                    else
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
                             Title = "无可用更新",
-                            Content = $"您已经是最新版 {Globals.AppVersion} , 无需更新！",
+                            Content = $"您使用的是最新的 {updateIndex.latest_version} 版本, 无需更新",
                             PrimaryButtonText = "确定",
                             DefaultButton = ContentDialogButton.Primary
                         });
+                    }
+                    else
+                    {
+                        bool isUpdate = false;
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = "发现可用更新",
+                            Content = $"现在可以更新到 {updateIndex.latest_version}\n\n是否更新?",
+                            PrimaryButtonText = "更新",
+                            CloseButtonText = "取消",
+                            DefaultButton = ContentDialogButton.Primary
+                        }, (() => isUpdate = true));
 
+                        if (isUpdate)
+                        {
+                            string savePath = System.IO.Path.Combine(Globals.TempPath!, "update.zip");
+                            if (File.Exists(savePath))
+                                File.Delete(savePath);
+
+                            await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => label_Loading.Content = $"下载更新文件中 {Math.Round(pgs, 2)}% ..."), new CancellationToken());
+                        }
+                    }
                 }
+
                 EndLoad();
             }
             catch (Exception ex)
