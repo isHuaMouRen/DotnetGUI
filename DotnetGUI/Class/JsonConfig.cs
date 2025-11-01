@@ -24,7 +24,6 @@ namespace DotnetGUI.Class
             public class UIConfig
             {
                 public Size WindowSize { get; set; }
-                public string? SelectPage { get; set; }
             }
 
             public class DotNetConfig

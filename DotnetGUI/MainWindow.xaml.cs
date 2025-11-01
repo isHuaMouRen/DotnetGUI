@@ -69,7 +69,6 @@ namespace DotnetGUI
                         UIConfig = new JsonConfig.Config.UIConfig
                         {
                             WindowSize = new Size(800, 450),
-                            SelectPage = "Home"
                         },
                         DotnetConfig = new JsonConfig.Config.DotNetConfig
                         {
@@ -87,16 +86,7 @@ namespace DotnetGUI
                 this.Width = Globals.GlobanConfig.UIConfig!.WindowSize.Width;
                 this.Height = Globals.GlobanConfig.UIConfig!.WindowSize.Height;
 
-                // --nav项
-                foreach (var item in navView.MenuItems)
-                    if (item is NavigationViewItem currentItem)
-                        if (currentItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
-                            navView.SelectedItem = currentItem;
-                // --nav foot项
-                foreach (var footItem in navView.FooterMenuItems)
-                    if (footItem is NavigationViewItem currentFootItem)
-                        if (currentFootItem.Tag.ToString() == Globals.GlobanConfig.UIConfig.SelectPage)
-                            navView.SelectedItem = currentFootItem;
+                navView.SelectedItem = navViewItem_Home;
                 #endregion
 
             }
@@ -220,10 +210,6 @@ namespace DotnetGUI
                     else
                         throw new Exception("内部错误: 不存在的NavView项");
 
-
-
-                    Globals.GlobanConfig!.UIConfig!.SelectPage = item.Tag.ToString();
-                    Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
                 }
                 else
                     throw new Exception("非法的值");
