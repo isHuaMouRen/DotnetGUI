@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using ToolLib.Library.LogLib;
 
 namespace DotnetGUI.Class
 {
@@ -15,6 +16,7 @@ namespace DotnetGUI.Class
         public static readonly string AppVersion = "Indev 2.0.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
+        public static Logger logger = new Logger(Path.Combine(ExecutePath!, "log"));
 
         public static JsonConfig.DotnetDownloadIndex.Root DotnetIndex = null!;
         public static JsonConfig.DotnetVersionInfo.Root DotnetVersionInfo = null!;

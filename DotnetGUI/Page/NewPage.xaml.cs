@@ -37,6 +37,7 @@ namespace DotnetGUI.Page
         #region Func
         public void StartLoad()
         {
+            Globals.logger.Info($"开始加载");
             progressRing_Loading.Visibility = Visibility.Visible;
             label_Loading.Visibility = Visibility.Visible;
             grid_Main.Effect = new BlurEffect { Radius = 10 };
@@ -45,6 +46,7 @@ namespace DotnetGUI.Page
 
         public void EndLoad()
         {
+            Globals.logger.Info($"结束加载");
             progressRing_Loading.Visibility = Visibility.Hidden;
             label_Loading.Visibility = Visibility.Hidden;
             grid_Main.Effect = null;
@@ -55,8 +57,11 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"NewPage 开始初始化");
                 StartLoad();
+
                 #region 加载模板
+                Globals.logger.Info($"获取模板...");
                 comboBox_Template.Items.Clear();
 
 
@@ -70,7 +75,9 @@ namespace DotnetGUI.Page
                     StandardOutputEncoding = Encoding.UTF8
                 };
                 using var p = Process.Start(psi);
-                string output = await p.StandardOutput.ReadToEndAsync();
+                string output = await p!.StandardOutput.ReadToEndAsync();
+                Globals.logger.Info($"获得输出: {output}");
+
                 await p.WaitForExitAsync();
 
                 if (p.ExitCode != 0)
@@ -122,9 +129,11 @@ namespace DotnetGUI.Page
                 #endregion
 
                 EndLoad();
+                Globals.logger.Info($"NewPage 结束初始化");
             }
             catch (Exception ex)
             {
+                
                 comboBox_Template.Items.Clear();
                 ErrorReportDialog.Show("发生错误", "初始化 NewPage 时发生错误", ex);
             }
@@ -153,6 +162,7 @@ namespace DotnetGUI.Page
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在尝试跳转 SettingsPage 发生错误", ex);
             }
         }
@@ -161,6 +171,7 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"开始创建项目");
                 StartLoad();
 
                 string template = (string)((ComboBoxItem)comboBox_Template.SelectedItem).Tag;
@@ -172,8 +183,9 @@ namespace DotnetGUI.Page
                 string projName = textBox_Name.Text;
                 if (string.IsNullOrEmpty(projName)) throw new Exception("必须传入项目名");
 
-                string arg = $"{template} {force} {language} -n {projName} -o {Globals.GlobanConfig.DotnetConfig.WorkingDirectory}";
+                string arg = $"{template} {force} {language} -n {projName} -o {Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory}";
 
+                Globals.logger.Info($"参数: dotnet new {arg}");
 
                 var process = Process.Start(new ProcessStartInfo
                 {
@@ -187,20 +199,28 @@ namespace DotnetGUI.Page
                     StandardOutputEncoding = Encoding.UTF8
                 });
 
+                Globals.logger.Info($"==========[Dotnet开始运行]==========");
                 string? line;
-                while ((line = await process.StandardOutput.ReadLineAsync()) != null)
+                while ((line = await process!.StandardOutput.ReadLineAsync()) != null)
+                {
+                    Globals.logger.Info($"{line}");
                     label_Loading.Content = line;
+                }
 
+                Globals.logger.Warn($"==========[Dotnet错误信息]==========");
 
                 var error = new StringBuilder();
                 string? errorLine;
                 while ((errorLine = await process.StandardError.ReadLineAsync()) != null)
                 {
+                    Globals.logger.Warn($"{error}");
                     error.AppendLine(errorLine);
                 }
 
 
                 await process.WaitForExitAsync();
+
+                Globals.logger.Info($"==========[Dotnet结束运行]==========");
 
                 string errorInfo = error.ToString();
 
@@ -245,6 +265,7 @@ namespace DotnetGUI.Page
                 }
 
                 EndLoad();
+                Globals.logger.Info($"创建项目结束");
             }
             catch (Exception ex)
             {

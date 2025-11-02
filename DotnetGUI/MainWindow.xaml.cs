@@ -61,11 +61,12 @@ namespace DotnetGUI
         {
             try
             {
-
+                Globals.logger.Info($"程序开始构造初始化");
                 #region 读写配置
                 //如没有就写入
                 if (!File.Exists(Globals.ConfigPath))
                 {
+                    Globals.logger.Info($"未检测到配置文件，即将创建");
                     Globals.GlobanConfig = new JsonConfig.Config.Root
                     {
                         UIConfig = new JsonConfig.Config.UIConfig
@@ -91,7 +92,7 @@ namespace DotnetGUI
 
                 navView.SelectedItem = navViewItem_Home;
                 #endregion
-
+                Globals.logger.Info($"程序结束构造初始化");
             }
             catch (Exception ex)
             {
@@ -103,13 +104,17 @@ namespace DotnetGUI
         {
             try
             {
+                Globals.logger.Info($"程序开始初始化");
+
                 #region 启动参数检查
+                Globals.logger.Info($"开始启动参数检测...");
                 string[] args = Environment.GetCommandLineArgs();
                 bool isShellExecute = false;
                 bool isUpdateExecute = false;
 
                 foreach (var arg in args)
                 {
+                    Globals.logger.Info($"启动参数: {arg}");
                     switch (arg)
                     {
                         case "-shell":
@@ -123,6 +128,7 @@ namespace DotnetGUI
                 {
                     if (!isShellExecute)
                     {
+                        Globals.logger.Info($"isShellExecute = false");
                         var dialog = new ContentDialog
                         {
                             Title = "提示",
@@ -135,6 +141,7 @@ namespace DotnetGUI
                     }
                     if (isUpdateExecute)
                     {
+                        Globals.logger.Info($"isUpdateExecute = true");
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
                             Title = "更新完成",
@@ -168,6 +175,7 @@ namespace DotnetGUI
 
                 if (Globals.GlobanConfig!.UIConfig!.isFirstUse)
                 {
+                    Globals.logger.Info($"检测到首次使用，开始OOBE环节");
                     bool isTutorialDone = false;
                     int totalStep = 2;
 
@@ -274,10 +282,14 @@ namespace DotnetGUI
                         Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
 
                         isTutorialDone = true;
+
+                        Globals.logger.Info($"完成OOBE");
                     }
                 }
 
                 #endregion
+
+                Globals.logger.Info($"程序初始化完毕");
             }
             catch (Exception ex)
             {
@@ -303,6 +315,7 @@ namespace DotnetGUI
             {
                 if (navView.SelectedItem is NavigationViewItem item)
                 {
+                    Globals.logger.Info($"用户选择 {item.Content} 页");
                     //Home
                     if (item == navViewItem_Home)
                         frame_Navv.Navigate(_homePage);

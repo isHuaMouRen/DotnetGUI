@@ -37,6 +37,8 @@ namespace DotnetGUI.Page
         #region Func
         public void StartLoad()
         {
+            Globals.logger.Info($"开始进入加载屏幕");
+
             progressRing_Loading.Visibility = Visibility.Visible;
             label_Loading.Visibility = Visibility.Visible;
             grid_Main.Effect = new BlurEffect { Radius = 10 };
@@ -45,6 +47,8 @@ namespace DotnetGUI.Page
 
         public void EndLoad()
         {
+            Globals.logger.Info($"退出加载屏幕");
+
             progressRing_Loading.Visibility = Visibility.Hidden;
             label_Loading.Visibility = Visibility.Hidden;
             grid_Main.Effect = null;
@@ -55,20 +59,27 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"BuildPage 开始初始化");
                 StartLoad();
 
                 #region 扫描项目文件
+                Globals.logger.Info($"开始扫描项目文件");
+
                 projFiles?.Clear();
                 await ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
                 if (projFiles?.Count > 0)
                 {
                     comboBox_Proj.Items.Clear();
                     foreach (var item in projFiles)
+                    {
                         comboBox_Proj.Items.Add(item);
+                        Globals.logger.Info($"发现项目文件: {item}");
+                    }
                     comboBox_Proj.SelectedIndex = 0;
                 }
                 else
                 {
+                    Globals.logger.Info($"未找到任何项目");
                     var dialog = new ContentDialog
                     {
                         Title = "提示",
@@ -98,9 +109,11 @@ namespace DotnetGUI.Page
                 #endregion
 
                 EndLoad();
+                Globals.logger.Info($"BuildPage 初始化结束");
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "初始化 BuildPage 发生错误", ex);
             }
         }
@@ -108,6 +121,7 @@ namespace DotnetGUI.Page
         //遍历项目文件夹
         public async Task ScanFile(string path)
         {
+            Globals.logger.Info($"创建遍历任务...");
             await Task.Run(async () =>
             {
                 string[] files = Directory.GetFiles(path);
@@ -118,7 +132,8 @@ namespace DotnetGUI.Page
                 string[] dirs = Directory.GetDirectories(path);
                 foreach (var dir in dirs)
                     await ScanFile(dir);
-            });            
+            });
+            Globals.logger.Info($"遍历任务结束");
         }
         #endregion
 
@@ -137,6 +152,7 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"开始生成项目...");
                 StartLoad();
 
                 string? projName = (string)comboBox_Proj.SelectedItem;
@@ -145,6 +161,8 @@ namespace DotnetGUI.Page
                 string? force = toggleSwitch_Force.IsOn == true ? " --force" : null;
                 string? sc = toggleSwitch_SelfCon.IsOn == true ? " --sc true" : " --sc false";
                 string? ucr = toggleSwitch_Ucr.IsOn == true ? " --ucr" : null;
+                
+                Globals.logger.Info($"启动参数: dotnet build {projName}{arch}{config}{force}{sc}{ucr}");
 
                 var process = Process.Start(new ProcessStartInfo
                 {
@@ -159,18 +177,29 @@ namespace DotnetGUI.Page
                     WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory
                 });
 
+                Globals.logger.Info($"==========[Dotnet开始运行]==========");
+
                 string? line;
                 while ((line = await process!.StandardOutput.ReadLineAsync()) != null)
+                {
+                    Globals.logger.Info($"{line}");
                     label_Loading.Content = line;
+                }
 
+                Globals.logger.Warn($"==========[Dotnet错误信息]==========]");
 
                 var error = new StringBuilder();
                 string? errorLine;
                 while ((errorLine = await process.StandardError.ReadLineAsync()) != null)
+                {
+                    Globals.logger.Warn($"{line}");
                     error.AppendLine(errorLine);
+                }
 
 
                 await process.WaitForExitAsync();
+
+                Globals.logger.Info($"==========[Dotnet结束运行]==========");
 
                 string errorInfo = error.ToString();
 
@@ -215,9 +244,12 @@ namespace DotnetGUI.Page
                 }
 
                 EndLoad();
+
+                Globals.logger.Info($"生成项目完毕");
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在生成项目时发生错误", ex);
             }
         }

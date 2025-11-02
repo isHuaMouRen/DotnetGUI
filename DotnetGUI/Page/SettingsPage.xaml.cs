@@ -45,7 +45,7 @@ namespace DotnetGUI.Page
         public void Initialize()
         {
             try
-            {              
+            {
                 //workDirectory
                 textBox_WorkingPath.Text = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory;
             }
@@ -54,7 +54,7 @@ namespace DotnetGUI.Page
                 ErrorReportDialog.Show("发生错误", $"初始化 {typeof(SettingsPage).Name} 时发生错误", ex);
             }
         }
-        
+
         public void StartLoad()
         {
             progressRing_Loading.Visibility = Visibility.Visible;
@@ -74,7 +74,7 @@ namespace DotnetGUI.Page
 
         public SettingsPage()
         {
-            InitializeComponent();            
+            InitializeComponent();
         }
 
         //workingDirectory
@@ -82,6 +82,7 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"选择工作目录...");
                 var dialog = new OpenFolderDialog
                 {
                     Title = "选择工作目录",
@@ -102,6 +103,7 @@ namespace DotnetGUI.Page
                         };
                         await DialogManager.ShowDialogAsync(dialog2, (() =>
                         {
+                            Globals.logger.Info($"工作目录: {dialog.FolderName}");
                             textBox_WorkingPath.Text = dialog.FolderName;
                             Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory = dialog.FolderName;
                             Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
@@ -116,7 +118,6 @@ namespace DotnetGUI.Page
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在选择目录时发生错误", ex);
-                throw;
             }
         }
 
@@ -197,14 +198,20 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"开始检查更新...");
                 StartLoad();
 
-                using (var client = new HttpClient()) 
+                using (var client = new HttpClient())
                 {
-                    JsonConfig.UpdateIndex.Root updateIndex = Json.ReadJson<JsonConfig.UpdateIndex.Root>(await client.GetStringAsync($"{Globals.UpdateRootUrl}latest.json"));
+                    string result = await client.GetStringAsync($"{Globals.UpdateRootUrl}latest.json");
+                    JsonConfig.UpdateIndex.Root updateIndex = Json.ReadJson<JsonConfig.UpdateIndex.Root>(result);
+
+                    Globals.logger.Info($"获得更新索引: {result}");
+                    Globals.logger.Info($"最新版本: {updateIndex.latest_version}  当前版本: {Globals.AppVersion}");
 
                     if (updateIndex.latest_version == Globals.AppVersion)
                     {
+                        Globals.logger.Info($"无可用更新");
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
                             Title = "无可用更新",
@@ -215,6 +222,7 @@ namespace DotnetGUI.Page
                     }
                     else
                     {
+                        Globals.logger.Info($"发现可用更新");
                         bool isUpdate = false;
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
@@ -228,13 +236,18 @@ namespace DotnetGUI.Page
                         if (isUpdate)
                         {
                             string savePath = System.IO.Path.Combine(Globals.TempPath!, "update.zip");
+                            Globals.logger.Info($"开始更新，保存位置: {savePath}");
                             if (File.Exists(savePath))
                                 File.Delete(savePath);
 
-                            await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => label_Loading.Content = $"下载更新文件中 {Math.Round(pgs, 2)}% ..."), new CancellationToken());
+                            Globals.logger.Info($"开始下载任务...");
+                            await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => { label_Loading.Content = $"下载更新文件中 {Math.Round(pgs, 2)}% ..."; Globals.logger.Info($"下载进度: {pgs}&"); }), new CancellationToken());
+                            Globals.logger.Info($"下载任务结束");
 
                             label_Loading.Content = $"下载更新文件成功, 即将重启...";
                             await Task.Delay(2000);
+
+                            Globals.logger.Info($"调用更新服务...");
 
                             Process.Start(new ProcessStartInfo
                             {
@@ -242,12 +255,14 @@ namespace DotnetGUI.Page
                                 Arguments = $"-updatefile \"{savePath}\"",
                                 UseShellExecute = true
                             });
+                            Globals.logger.Info($"程序退出(ExitCode: 0)");
                             Environment.Exit(0);
                         }
                     }
                 }
 
                 EndLoad();
+                Globals.logger.Info($"检查更新结束");
             }
             catch (Exception ex)
             {

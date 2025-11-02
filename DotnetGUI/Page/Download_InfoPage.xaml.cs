@@ -43,6 +43,7 @@ namespace DotnetGUI.Page
         #region Func
         public void StartLoad()
         {
+            Globals.logger.Info($"开始加载");
             progressRing_Load.Visibility = Visibility.Visible;
             label_Load.Visibility = Visibility.Visible;
 
@@ -52,6 +53,7 @@ namespace DotnetGUI.Page
 
         public void EndLoad()
         {
+            Globals.logger.Info($"结束加载");
             progressRing_Load.Visibility = Visibility.Collapsed;
             label_Load.Visibility = Visibility.Collapsed;
 
@@ -66,13 +68,13 @@ namespace DotnetGUI.Page
             {
                 using (var client = new HttpClient())
                 {
-                    Globals.DotnetVersionInfo = Json.ReadJson<JsonConfig.DotnetVersionInfo.Root>(await client.GetStringAsync(Globals.DotnetIndex.release_index[SelectIndex].releases_json));
+                    Globals.DotnetVersionInfo = Json.ReadJson<JsonConfig.DotnetVersionInfo.Root>(await client.GetStringAsync(Globals.DotnetIndex.release_index![SelectIndex].releases_json));
 
                     label_MainVersion.Content = $"下载.NET SDK {Globals.DotnetIndex.release_index[SelectIndex].channel_version}";
 
 
                     listBox.Items.Clear();
-                    for (int i = 0; i < Globals.DotnetVersionInfo.releases.Length; i++)
+                    for (int i = 0; i < Globals.DotnetVersionInfo.releases!.Length; i++)
                     {
                         string support;
 
@@ -117,7 +119,7 @@ namespace DotnetGUI.Page
                 var dialog = new ContentDialog
                 {
                     Title = "下载确认",
-                    Content = $".NET主版本: {Globals.DotnetIndex.release_index[SelectIndex].channel_version}\n.NET SDK版本: {Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.version}\n发布日期: {Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].release_date}\n\n是否下载",
+                    Content = $".NET主版本: {Globals.DotnetIndex.release_index![SelectIndex].channel_version}\n.NET SDK版本: {Globals.DotnetVersionInfo.releases![listBox.SelectedIndex].sdk!.version}\n发布日期: {Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].release_date}\n\n是否下载",
                     PrimaryButtonText = "确定",
                     CloseButtonText = "取消",
                     DefaultButton = ContentDialogButton.Primary
@@ -126,16 +128,18 @@ namespace DotnetGUI.Page
                 {
                     try
                     {
+                        Globals.logger.Info($"开始下载.NET  主版本: {Globals.DotnetIndex.release_index![SelectIndex].channel_version}  SDK版本: {Globals.DotnetVersionInfo.releases![listBox.SelectedIndex].sdk!.version}");
                         string savePath = $"{Globals.TempPath}\\dotnet-sdk-win-x64.exe";
                         string? url = null;
                         string? hash = null;
 
-                        for (int i = 0; i < Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files.Length; i++)
+                        for (int i = 0; i < Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk!.files!.Length; i++)
                         {
-                            if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].name == "dotnet-sdk-win-x64.exe")
+                            if (Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk!.files![i].name == "dotnet-sdk-win-x64.exe")
                             {
-                                url = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].url;
-                                hash = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk.files[i].hash;
+                                url = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk!.files![i].url;
+                                hash = Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].sdk!.files![i].hash;
+                                Globals.logger.Info($"寻找到.NET 安装包 url: {url}  hash: {hash}");
                             }
                         }
 
@@ -148,8 +152,13 @@ namespace DotnetGUI.Page
 
                             StartLoad();
                             button_Cancel.Visibility = Visibility.Visible;
-                            await Downloader.DownloadFileAsync(url, savePath, ((p) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ..."; }), cts.Token);
-
+                            
+                            Globals.logger.Info($"开始执行下载任务...");
+                            
+                            await Downloader.DownloadFileAsync(url, savePath, ((p) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ..."; Globals.logger.Info($"下载进度 {p}%"); }), cts.Token);
+                            
+                            Globals.logger.Info($"下载完成");
+                            
                             label_Load.Content = "执行安装程序...";
 
                             var process = new Process();
@@ -161,8 +170,11 @@ namespace DotnetGUI.Page
                                 RedirectStandardError = true
                             };
 
+                            Globals.logger.Info($"执行安装程序...");
                             process.Start();
                             await Task.Run(() => process.WaitForExit());
+
+                            Globals.logger.Info($"安装程序退出(ExitCode: {process.ExitCode})");
 
                             if (process.ExitCode == 0)
                             {
@@ -198,6 +210,7 @@ namespace DotnetGUI.Page
                     }
                     catch (Exception ex)
                     {
+                        
                         ErrorReportDialog.Show("发生错误", "下载.NET发生错误", ex);
                     }                    
                 }));
@@ -205,6 +218,7 @@ namespace DotnetGUI.Page
             }            
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在下载.NET时发生错误", ex);
             }
         }
@@ -212,7 +226,7 @@ namespace DotnetGUI.Page
         private void listBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             button_Download.IsEnabled = true;
-            button_Download.Content = $"下载 {Globals.DotnetVersionInfo.releases[listBox.SelectedIndex].release_version}";
+            button_Download.Content = $"下载 {Globals.DotnetVersionInfo.releases![listBox.SelectedIndex].release_version}";
         }
 
         private async void Button_Click(object sender, RoutedEventArgs e)
@@ -224,7 +238,7 @@ namespace DotnetGUI.Page
                 PrimaryButtonText = "确定",
                 SecondaryButtonText = "取消",
                 DefaultButton = ContentDialogButton.Primary
-            }, (() => cts?.Cancel()));
+            }, (() => { cts?.Cancel(); Globals.logger.Info($"用户取消下载"); }));
             
         }
     }

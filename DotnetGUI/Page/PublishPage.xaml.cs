@@ -37,6 +37,7 @@ namespace DotnetGUI.Page
         #region Func
         public void StartLoad()
         {
+            Globals.logger.Info($"开始加载");
             progressRing_Loading.Visibility = Visibility.Visible;
             label_Loading.Visibility = Visibility.Visible;
             grid_Main.Effect = new BlurEffect { Radius = 10 };
@@ -45,6 +46,7 @@ namespace DotnetGUI.Page
 
         public void EndLoad()
         {
+            Globals.logger.Info($"结束加载");
             progressRing_Loading.Visibility = Visibility.Hidden;
             label_Loading.Visibility = Visibility.Hidden;
             grid_Main.Effect = null;
@@ -55,10 +57,11 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"PublishPage 开始初始化");
                 StartLoad();
 
                 #region 扫描项目
-
+                Globals.logger.Info($"开始扫描项目文件");
                 projFiles?.Clear();
 
                 await ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
@@ -66,11 +69,15 @@ namespace DotnetGUI.Page
                 {
                     comboBox_ProjName.Items.Clear();
                     foreach (var item in projFiles)
+                    {
+                        Globals.logger.Info($"{item}");
                         comboBox_ProjName.Items.Add(item);
+                    }
                     comboBox_ProjName.SelectedIndex = 0;
                 }
                 else
                 {
+                    Globals.logger.Warn($"找不到任何项目文件");
                     var dialog = new ContentDialog
                     {
                         Title = "提示",
@@ -95,9 +102,11 @@ namespace DotnetGUI.Page
                 radioButton_OutputDefault_Click(radioButton_OutputDefault, null!);
 
                 EndLoad();
+                Globals.logger.Info($"PublishPage 结束初始化");
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在初始化 PublishPage 发生错误", ex);
             }
         }
@@ -105,6 +114,7 @@ namespace DotnetGUI.Page
         //遍历项目文件夹
         public async Task ScanFile(string path)
         {
+            Globals.logger.Info($"创建遍历任务");
             await Task.Run(async () =>
             {
                 string[] files = Directory.GetFiles(path);
@@ -116,6 +126,7 @@ namespace DotnetGUI.Page
                 foreach (var dir in dirs)
                     await ScanFile(dir);
             });
+            Globals.logger.Info($"遍历任务结束");
         }
 
         #endregion
@@ -148,6 +159,7 @@ namespace DotnetGUI.Page
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "发生错误", ex);
             }
         }
@@ -166,6 +178,7 @@ namespace DotnetGUI.Page
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "发生错误", ex);
             }
         }
@@ -174,6 +187,7 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"开始发布项目");
                 StartLoad();
 
                 string projName = $" \"{comboBox_ProjName.SelectedItem}\"";
@@ -185,6 +199,8 @@ namespace DotnetGUI.Page
                 string output = radioButton_OutputCustom.IsChecked == true ? $" -o {textBox_Output.Text}" : null!;
                 string selfCon = toggleSwitch_SelfCon.IsOn == true ? " --self-contained true" : " --self-contained false";
                 string ucr = toggleSwitch_Ucr.IsOn == true ? " --ucr" : null!;
+
+                Globals.logger.Info($"启动参数: dotnet publish{projName}{arch}{force}{noDeps}{noLogo}{noRestore}{output}{selfCon}{ucr}");
 
                 var process = Process.Start(new ProcessStartInfo
                 {
@@ -198,19 +214,30 @@ namespace DotnetGUI.Page
                     CreateNoWindow = true,
                     WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory
                 });
+                
+                Globals.logger.Info($"==========[Dotnet开始运行]==========");
 
                 string? line;
                 while ((line = await process!.StandardOutput.ReadLineAsync()) != null)
+                {
+                    Globals.logger.Info($"{line}");
                     label_Loading.Content = line;
+                }
 
+                Globals.logger.Warn($"==========[Dotnet错误信息]===========");
 
                 var error = new StringBuilder();
                 string? errorLine;
                 while ((errorLine = await process.StandardError.ReadLineAsync()) != null)
+                {
+                    Globals.logger.Warn($"{errorLine}");
                     error.AppendLine(errorLine);
+                }
 
 
                 await process.WaitForExitAsync();
+
+                Globals.logger.Info($"==========[Dotnet结束运行]=========");
 
                 string errorInfo = error.ToString();
 
@@ -257,6 +284,7 @@ namespace DotnetGUI.Page
 
 
                 EndLoad();
+                Globals.logger.Info($"结束发布项目");
             }
             catch (Exception ex)
             {

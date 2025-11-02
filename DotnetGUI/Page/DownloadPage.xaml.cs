@@ -37,16 +37,19 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"DownloadPage 开始初始化");
                 StartLoad();
                 using (var client = new HttpClient())
                 {
                     button_Download.IsEnabled = false;
                     listBox.SelectedIndex = -1;
 
-                    Globals.DotnetIndex = Json.ReadJson<JsonConfig.DotnetDownloadIndex.Root>(await client.GetStringAsync("https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json"));
+                    string result = await client.GetStringAsync("https://dotnetcli.blob.core.windows.net/dotnet/release-metadata/releases-index.json");
+                    Globals.logger.Info($"获取.NET主索引: {result}");
+                    Globals.DotnetIndex = Json.ReadJson<JsonConfig.DotnetDownloadIndex.Root>(result);
 
                     listBox.Items.Clear();
-                    for (int i = 0; i < Globals.DotnetIndex.release_index.Length; i++)
+                    for (int i = 0; i < Globals.DotnetIndex.release_index!.Length; i++)
                     {
                         if (Globals.DotnetIndex.release_index[i].product == ".NET")
                         {
@@ -72,9 +75,11 @@ namespace DotnetGUI.Page
                     }
                 }
                 EndLoad();
+                Globals.logger.Info($"DownloadPage 结束初始化");
             }
             catch (Exception ex)
             {
+                
                 EndLoad();
                 ErrorReportDialog.Show("发生错误", $"在初始化 {typeof(DownloadPage).Name} 时发生错误", ex);
             }
@@ -82,6 +87,7 @@ namespace DotnetGUI.Page
 
         public void StartLoad()
         {
+            Globals.logger.Info($"开始加载");
             progressRing_Load.Visibility = Visibility.Visible;
             label_Load.Visibility = Visibility.Visible;
 
@@ -91,6 +97,7 @@ namespace DotnetGUI.Page
 
         public void EndLoad()
         {
+            Globals.logger.Info($"结束加载");
             progressRing_Load.Visibility = Visibility.Collapsed;
             label_Load.Visibility = Visibility.Collapsed;
 
@@ -117,7 +124,7 @@ namespace DotnetGUI.Page
                 if (listBox.SelectedIndex >= 0)
                 {
                     button_Download.IsEnabled = true;
-                    label_Version.Content = ".NET " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].channel_version;
+                    label_Version.Content = ".NET " + Globals.DotnetIndex.release_index![listBox.SelectedIndex].channel_version;
                     label_SubVersion.Content = "最新版本: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_release;
                     label_ReleaseDate.Content = "发布日期: " + Globals.DotnetIndex.release_index[listBox.SelectedIndex].latest_version_date;
                 }
@@ -126,6 +133,7 @@ namespace DotnetGUI.Page
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在加载版本信息时发生错误", ex);
             }
         }
@@ -134,11 +142,13 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"导航进入详细下载页...");
                 var frame = this.NavigationService;
                 frame.Navigate(new Download_InfoPage(listBox.SelectedIndex));
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在尝试加载 Download_InfoPage 时发生错误", ex);
             }
         }

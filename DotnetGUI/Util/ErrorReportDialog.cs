@@ -1,4 +1,5 @@
-﻿using ModernWpf.Controls;
+﻿using DotnetGUI.Class;
+using ModernWpf.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,7 @@ namespace DotnetGUI.Util
     {
         public static async void Show(string title,string message,Exception ex)
         {
+            Globals.logger.Error($"{title} {message}: {ex}");
             var dialog = new ContentDialog
             {
                 Title = title,

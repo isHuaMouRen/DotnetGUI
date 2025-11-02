@@ -25,6 +25,8 @@ namespace DotnetGUI.Page
         {
             InitializeComponent();
             label_Version.Content = Globals.AppVersion;
+
+            Globals.logger.Info($"AboutPage 初始化完成");
         }
     }
 }

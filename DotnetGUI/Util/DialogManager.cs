@@ -1,4 +1,5 @@
-﻿using ModernWpf.Controls;
+﻿using DotnetGUI.Class;
+using ModernWpf.Controls;
 using System;
 using System.Threading.Tasks;
 
@@ -10,13 +11,21 @@ namespace DotnetGUI.Util
 
         public static async Task ShowDialogAsync(ContentDialog dialog, Action? primaryCallback = null, Action? secondaryCallback = null, Action? closeCallback = null)
         {
+            Globals.logger.Info($"[对话框管理器]: 添加队列(Title: {dialog.Title}, Content: {dialog.Content})");
             // 等待直到没有对话框显示
             await WaitForDialogToCloseAsync();
 
             isDialogShow = true;
+
+            Globals.logger.Info($"[对话框管理器]: 显示对话框");
+            
             var result = await dialog.ShowAsync();
+            
+            Globals.logger.Info($"[对话框管理器]: 对话框关闭, 用户选择: {result}");
+            
             isDialogShow = false;
 
+            Globals.logger.Info($"[对话框管理器]: 处理选择回调");
             HandleDialogResult(result, primaryCallback, secondaryCallback, closeCallback);
         }
 
@@ -24,6 +33,7 @@ namespace DotnetGUI.Util
         {
             while (isDialogShow)
             {
+                Globals.logger.Info($"等待当前对话框退出...");
                 await Task.Delay(100);
             }
         }

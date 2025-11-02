@@ -47,13 +47,15 @@ namespace DotnetGUI.Page
         {
             try
             {
+                Globals.logger.Info($"发送指令: dotnet {args}");
+
                 var process = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
                         FileName = "dotnet",
                         Arguments = args,
-                        WorkingDirectory = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
+                        WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
                         UseShellExecute = false,
@@ -66,16 +68,19 @@ namespace DotnetGUI.Page
                 process.Start();
 
                 textBox_Output.AppendText($"==========[{args}]=========={Environment.NewLine}");
+                Globals.logger.Info($"==========[Dotnet开始运行]==========");
 
                 await Task.WhenAll(
                         ReadOutputAsync(process.StandardOutput),
                         ReadOutputAsync(process.StandardError)
                     );
 
-                await Task.Run(() => process.WaitForExit());                             
+                await Task.Run(() => process.WaitForExit());
+                Globals.logger.Info($"==========[Dotnet结束运行]==========");
             }
             catch (Exception ex)
             {
+                
                 ErrorReportDialog.Show("发生错误", "在发送命令时发生错误", ex);
             }
         }
@@ -86,6 +91,7 @@ namespace DotnetGUI.Page
             while((line=await reader.ReadLineAsync()) != null)
             {
                 textBox_Output.AppendText($"{line}{Environment.NewLine}");
+                Globals.logger.Info($"{line}");
                 textBox_Output.ScrollToEnd();
             }
         }
