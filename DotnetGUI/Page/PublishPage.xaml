@@ -21,7 +21,7 @@
 
 
             <Label Content="体系结构:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,103,0,0" Height="32" VerticalContentAlignment="Center"/>
-            <ComboBox x:Name="comboBox_Arch" Margin="64,103,0,0" Width="393">
+            <ComboBox x:Name="comboBox_Arch" Margin="64,103,0,0" Width="393" SelectedIndex="0">
                 <ComboBoxItem Content="x64" Tag="x64"/>
                 <ComboBoxItem Content="x86" Tag="x86"/>
                 <ComboBoxItem Content="ARM64" Tag="arm64"/>
@@ -42,25 +42,32 @@
             <Label Content="无Logo:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,214,0,0" Height="32" VerticalContentAlignment="Center"/>
             <ui:ToggleSwitch x:Name="toggleSwitch_NoLogo" VerticalAlignment="Top" Margin="56,215,0,0"/>
             <Label Content="不显示启动横幅或版权消息。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="215,214,0,0" Foreground="#FF646464" d:LayoutOverrides="HorizontalAlignment" Height="32"/>
-            
-            
+
+
             <Label Content="不执行隐式还原:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,251,0,0" Height="32" VerticalContentAlignment="Center"/>
             <ui:ToggleSwitch x:Name="toggleSwitch_NoRestore" VerticalAlignment="Top" Margin="106,252,0,0"/>
             <Label Content="运行命令时不执行隐式还原。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="265,252,0,0" Foreground="#FF646464" Height="32" d:LayoutOverrides="HorizontalAlignment"/>
-            
-            
+
+
             <Label Content="自包含:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,288,0,0" Height="32" VerticalContentAlignment="Center"/>
             <ui:ToggleSwitch x:Name="toggleSwitch_SelfCon" VerticalAlignment="Top" Margin="51,289,0,0"/>
             <Label Content="使用应用程序发布 .NET 运行时，以便不需要在目标计算机上安装运行时。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="210,289,0,0" Foreground="#FF646464" Height="32" d:LayoutOverrides="HorizontalAlignment"/>
-            
-            
+
+
             <Label Content="使用当前运行时:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,325,0,0" Height="32" VerticalContentAlignment="Center"/>
             <ui:ToggleSwitch x:Name="toggleSwitch_Ucr" VerticalAlignment="Top" Margin="106,326,0,0"/>
             <Label Content="将当前运行时用作目标运行时。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="265,326,0,0" Foreground="#FF646464" Height="32" d:LayoutOverrides="HorizontalAlignment"/>
-            
-            
-            <Button x:Name="button_Publish" Content="  发布  " VerticalAlignment="Bottom"/>
 
+
+            <Label Content="输出目录:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,362,0,0" Height="32" VerticalContentAlignment="Center"/>
+            <RadioButton x:Name="radioButton_OutputDefault" Content="默认" Margin="64,363,0,0" VerticalAlignment="Top" IsChecked="True" Click="radioButton_OutputDefault_Click"/>
+            <RadioButton x:Name="radioButton_OutputCustom" Content="自定" Margin="128,363,0,0" VerticalAlignment="Top" Click="radioButton_OutputDefault_Click" Width="90"/>
+            <TextBox x:Name="textBox_Output" Margin="200,362,0,0" IsReadOnly="True" HorizontalAlignment="Left" VerticalAlignment="Top" Width="336"/>
+            <Button x:Name="button_Output_Broswer" Content="浏览..." Margin="541,363,0,0" VerticalAlignment="Top" Click="button_Output_Broswer_Click"/>
+            <Label Content="指定输出目录的路径。" VerticalAlignment="Top" VerticalContentAlignment="Center" Margin="602,362,0,0" Foreground="#FF646464" Height="32"/>
+
+
+            <Button x:Name="button_Publish" Content="  发布  " VerticalAlignment="Bottom" Click="button_Publish_Click"/>
 
         </Grid>
         <ui:ProgressRing x:Name="progressRing_Loading" IsActive="True" Width="50" Height="50" Visibility="Hidden"/>

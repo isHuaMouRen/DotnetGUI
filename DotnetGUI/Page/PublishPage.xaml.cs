@@ -1,8 +1,10 @@
 ﻿using DotnetGUI.Class;
 using DotnetGUI.Util;
+using Microsoft.Win32;
 using ModernWpf.Controls;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -48,7 +50,7 @@ namespace DotnetGUI.Page
             grid_Main.Effect = null;
             grid_Main.IsEnabled = true;
         }
-        
+
         public async void Initialize()
         {
             try
@@ -90,6 +92,8 @@ namespace DotnetGUI.Page
                 }
                 #endregion
 
+                radioButton_OutputDefault_Click(radioButton_OutputDefault, null!);
+
                 EndLoad();
             }
             catch (Exception ex)
@@ -125,6 +129,139 @@ namespace DotnetGUI.Page
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             Initialize();
+        }
+
+        private void radioButton_OutputDefault_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (radioButton_OutputDefault.IsChecked == true)
+                {
+                    textBox_Output.IsEnabled = false;
+                    button_Output_Broswer.IsEnabled = false;
+                }
+                else if (radioButton_OutputCustom.IsChecked == true)
+                {
+                    textBox_Output.IsEnabled = true;
+                    button_Output_Broswer.IsEnabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "发生错误", ex);
+            }
+        }
+
+        private void button_Output_Broswer_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var dialog = new OpenFolderDialog
+                {
+                    Title = "选择输出目录",
+                    Multiselect = false
+                };
+                if (dialog.ShowDialog() == true)
+                    textBox_Output.Text = dialog.FolderName;
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "发生错误", ex);
+            }
+        }
+
+        private async void button_Publish_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                StartLoad();
+
+                string projName = $" \"{comboBox_ProjName.SelectedItem}\"";
+                string arch = $" -a {(string)(((ComboBoxItem)comboBox_Arch.SelectedItem).Tag)}";
+                string force = toggleSwitch_Force.IsOn == true ? " --force" : null!;
+                string noDeps = toggleSwitch_NoDeps.IsOn == true ? " --no-dependencies" : null!;
+                string noLogo = toggleSwitch_NoLogo.IsOn == true ? " --nologo" : null!;
+                string noRestore = toggleSwitch_NoRestore.IsOn == true ? " --no-restore" : null!;
+                string output = radioButton_OutputCustom.IsChecked == true ? $" -o {textBox_Output.Text}" : null!;
+                string selfCon = toggleSwitch_SelfCon.IsOn == true ? " --self-contained true" : " --self-contained false";
+                string ucr = toggleSwitch_Ucr.IsOn == true ? " --ucr" : null!;
+
+                var process = Process.Start(new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = $"publish{projName}{arch}{force}{noDeps}{noLogo}{noRestore}{output}{selfCon}{ucr}",
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true,
+                    StandardErrorEncoding = Encoding.UTF8,
+                    StandardOutputEncoding = Encoding.UTF8,
+                    CreateNoWindow = true,
+                    WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory
+                });
+
+                string? line;
+                while ((line = await process!.StandardOutput.ReadLineAsync()) != null)
+                    label_Loading.Content = line;
+
+
+                var error = new StringBuilder();
+                string? errorLine;
+                while ((errorLine = await process.StandardError.ReadLineAsync()) != null)
+                    error.AppendLine(errorLine);
+
+
+                await process.WaitForExitAsync();
+
+                string errorInfo = error.ToString();
+
+
+                if (string.IsNullOrEmpty(errorInfo))
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "执行完毕",
+                        Content = $"已在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!)}\"发布项目",
+                        PrimaryButtonText = "定位",
+                        CloseButtonText = "确定",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+                    await DialogManager.ShowDialogAsync(dialog, (() =>
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!),
+                            UseShellExecute = true
+                        });
+                    }));
+                }
+                else
+                {
+                    var dialog = new ContentDialog
+                    {
+                        Title = "执行完毕",
+                        Content = $"尝试在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!)}\"发布项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
+                        PrimaryButtonText = "确定",
+                        SecondaryButtonText = "定位",
+                        DefaultButton = ContentDialogButton.Primary
+                    };
+                    await DialogManager.ShowDialogAsync(dialog, (() =>
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!),
+                            UseShellExecute = true
+                        });
+                    }));
+                }
+
+
+
+                EndLoad();
+            }
+            catch (Exception ex)
+            {
+                ErrorReportDialog.Show("发生错误", "在发布项目或解决方案发生错误", ex);
+            }
         }
     }
 }
