@@ -96,6 +96,7 @@ namespace DotnetGUI.Page
                 comboBox_Arch.SelectedIndex = 0;
 
                 #endregion
+
                 EndLoad();
             }
             catch (Exception ex)

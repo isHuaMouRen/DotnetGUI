@@ -47,6 +47,7 @@ namespace DotnetGUI
         public ModernWpf.Controls.Page _consolePage = new ConsolePage();
         public ModernWpf.Controls.Page _newPage = new NewPage();
         public ModernWpf.Controls.Page _buildPage = new BuildPage();
+        public ModernWpf.Controls.Page _publishPage = new PublishPage();
 
         public ModernWpf.Controls.Page _aboutPage = new AboutPage();
         public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
@@ -317,6 +318,9 @@ namespace DotnetGUI
                     //Build
                     else if (item == navViewItem_Build)
                         frame_Navv.Navigate(_buildPage);
+                    //Publish
+                    else if (item == navViewItem_Publish)
+                        frame_Navv.Navigate(_publishPage);
 
                     //About
                     else if (item == navViewItem_About)

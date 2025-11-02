@@ -36,6 +36,11 @@
                         <ui:PathIcon Data="M686-132 444-376q-20 8-40.5 12t-43.5 4q-100 0-170-70t-70-170q0-36 10-68.5t28-61.5l146 146 72-72-146-146q29-18 61.5-28t68.5-10q100 0 170 70t70 170q0 23-4 43.5T584-516l244 242q12 12 12 29t-12 29l-84 84q-12 12-29 12t-29-12Zm29-85 27-27-256-256q18-20 26-46.5t8-53.5q0-60-38.5-104.5T386-758l74 74q12 12 12 28t-12 28L332-500q-12 12-28 12t-28-12l-74-74q9 57 53.5 95.5T360-440q26 0 52-8t47-25l256 256ZM472-488Z"/>
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
+                <ui:NavigationViewItem x:Name="navViewItem_Publish" Content="发布" Tag="Publish">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:PathIcon Data="M242.87-30.43q-37.78 0-64.39-26.61t-26.61-64.39v-423.74q0-37.79 26.61-64.4 26.61-26.6 64.39-26.6H354.5v91H242.87v423.74h474.26v-423.74H605.5v-91h111.63q37.78 0 64.39 26.6 26.61 26.61 26.61 64.4v423.74q0 37.78-26.61 64.39t-64.39 26.61H242.87Zm191.63-281.2v-444.13l-64 64-63.65-64.41L480-929.57l173.15 173.4-63.65 64.41-64-64v444.13h-91Z"/>
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
 
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
