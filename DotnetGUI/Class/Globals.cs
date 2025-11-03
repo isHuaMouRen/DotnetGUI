@@ -15,7 +15,7 @@ namespace DotnetGUI.Class
         #region Var
         public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Indev 2.1.0.0";
+        public static readonly string AppVersion = "Indev 2.2.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobanConfig = null;
 
