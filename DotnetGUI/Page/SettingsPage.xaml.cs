@@ -106,7 +106,7 @@ namespace DotnetGUI.Page
                             Globals.logger.Info($"工作目录: {dialog.FolderName}");
                             textBox_WorkingPath.Text = dialog.FolderName;
                             Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory = dialog.FolderName;
-                            Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                            Globals.SaveAllConfig();
                             isWhile = false;
                         }));
                     }

@@ -80,7 +80,7 @@ namespace DotnetGUI
                             DotnetState = null
                         }
                     };
-                    Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                    Globals.SaveAllConfig();
                 }
 
                 //读取
@@ -218,7 +218,7 @@ namespace DotnetGUI
                                         DefaultButton = ContentDialogButton.Primary
                                     });
                                     Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
-                                    Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                                    Globals.SaveAllConfig();
                                     isSelectDone = true;
                                 }
                                 else
@@ -234,7 +234,7 @@ namespace DotnetGUI
                                     {
                                         Directory.CreateDirectory(folderDialog.FolderName);
                                         Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
-                                        Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                                        Globals.SaveAllConfig();
                                         isSelectDone = true;
                                     }));
                                 }
@@ -279,12 +279,46 @@ namespace DotnetGUI
                         });
 
                         Globals.GlobanConfig.UIConfig.isFirstUse = false;
-                        Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                        Globals.SaveAllConfig();
 
                         isTutorialDone = true;
 
                         Globals.logger.Info($"完成OOBE");
                     }
+                }
+
+                #endregion
+
+                #region 工作目录可用性
+
+                if (!Directory.Exists(Globals.GlobanConfig.DotnetConfig!.WorkingDirectory))
+                {
+                    Globals.logger.Warn("工作目录不可用!");
+
+                    await DialogManager.ShowDialogAsync(new ContentDialog
+                    {
+                        Title = "警告",
+                        Content = $"工作目录 \"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\" 不可用！\n\n这可能导致程序频繁报错！",
+                        PrimaryButtonText = "更换",
+                        SecondaryButtonText = "创建",
+                        CloseButtonText = "忽略",
+                        DefaultButton = ContentDialogButton.Primary
+                    }, (() =>
+                    {
+                        var dialog = new OpenFolderDialog
+                        {
+                            Title = "选择工作目录",
+                            Multiselect = false
+                        };
+                        if (dialog.ShowDialog() == true)
+                        {
+                            Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
+                            Globals.SaveAllConfig();
+                        }
+                    }), (() =>
+                    {
+                        Directory.CreateDirectory(Globals.GlobanConfig.DotnetConfig.WorkingDirectory!);
+                    }));
                 }
 
                 #endregion
@@ -359,7 +393,7 @@ namespace DotnetGUI
             try
             {
                 Globals.GlobanConfig!.UIConfig!.WindowSize = new Size(this.Width, this.Height);
-                Json.WriteJson(Globals.ConfigPath, Globals.GlobanConfig);
+                Globals.SaveAllConfig();
             }
             catch (Exception ex)
             {
