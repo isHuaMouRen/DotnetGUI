@@ -35,7 +35,13 @@ namespace UpdateService
 
                 Console.WriteLine("开始解压文件...");
                 ZipFile.ExtractToDirectory(updateFilePath, executePath, true);
-                Console.WriteLine("解压完毕, 启动主程序...");
+                Console.WriteLine("解压完毕, 将在3秒后启动启动主程序...");
+                
+                for (int i = 0; i < 3; i++)
+                {
+                    Console.WriteLine($"{3 - i}");
+                    Thread.Sleep(1000);
+                }
 
                 Process.Start(new ProcessStartInfo
                 {
