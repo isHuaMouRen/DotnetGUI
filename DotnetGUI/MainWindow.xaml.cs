@@ -106,11 +106,7 @@ namespace DotnetGUI
 
                 navView.SelectedItem = navViewItem_Home;
 
-                Globals.SetTheme();
-                if (Globals.GlobanConfig.UIConfig.Theme == "Light")
-                    navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                else if (Globals.GlobanConfig.UIConfig.Theme == "Dark")
-                    navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+                Globals.SetTheme(navView);
 
                 #endregion
 

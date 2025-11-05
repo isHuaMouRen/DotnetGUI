@@ -283,13 +283,7 @@ namespace DotnetGUI.Page
             {
                 Globals.GlobanConfig!.UIConfig!.Theme = (string)radioButton.Tag;
                 Globals.SaveAllConfig();
-                Globals.SetTheme();
-
-                var navView = ((NavigationView)(Window.GetWindow(this).FindName("navView")));
-                if (Globals.GlobanConfig.UIConfig.Theme == "Light")
-                    navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
-                else if (Globals.GlobanConfig.UIConfig.Theme == "Dark")
-                    navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+                Globals.SetTheme(((NavigationView)(Window.GetWindow(this).FindName("navView"))));
             }
         }
     }
