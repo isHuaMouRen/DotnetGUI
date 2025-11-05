@@ -48,6 +48,14 @@ namespace DotnetGUI.Page
             {
                 //workDirectory
                 textBox_WorkingPath.Text = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory;
+
+                //Theme
+                radioButton_Light.IsChecked = false;radioButton_Dark.IsChecked = false;
+                if (Globals.GlobanConfig.UIConfig!.Theme == "Light")
+                    radioButton_Light.IsChecked = true;
+                else if (Globals.GlobanConfig.UIConfig!.Theme == "Dark")
+                    radioButton_Dark.IsChecked = true;
+
             }
             catch (Exception ex)
             {
@@ -191,8 +199,6 @@ namespace DotnetGUI.Page
             }
         }
 
-
-
         // 检查更新
         private async void button_CheckUpdate_Click(object sender, RoutedEventArgs e)
         {
@@ -267,6 +273,23 @@ namespace DotnetGUI.Page
             catch (Exception ex)
             {
                 ErrorReportDialog.Show("发生错误", "在检测更新时发生错误", ex);
+            }
+        }
+
+        //主题
+        private void RadioButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is RadioButton radioButton && radioButton.IsChecked == true) 
+            {
+                Globals.GlobanConfig!.UIConfig!.Theme = (string)radioButton.Tag;
+                Globals.SaveAllConfig();
+                Globals.SetTheme();
+
+                var navView = ((NavigationView)(Window.GetWindow(this).FindName("navView")));
+                if (Globals.GlobanConfig.UIConfig.Theme == "Light")
+                    navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                else if (Globals.GlobanConfig.UIConfig.Theme == "Dark")
+                    navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
             }
         }
     }

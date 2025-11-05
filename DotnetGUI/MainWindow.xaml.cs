@@ -85,7 +85,8 @@ namespace DotnetGUI
                         UIConfig = new JsonConfig.Config.UIConfig
                         {
                             WindowSize = new Size(800, 450),
-                            isFirstUse = true
+                            isFirstUse = true,
+                            Theme="Light"
                         },
                         DotnetConfig = new JsonConfig.Config.DotNetConfig
                         {
@@ -104,8 +105,15 @@ namespace DotnetGUI
                 this.Height = Globals.GlobanConfig.UIConfig!.WindowSize.Height;
 
                 navView.SelectedItem = navViewItem_Home;
+
+                Globals.SetTheme();
+                if (Globals.GlobanConfig.UIConfig.Theme == "Light")
+                    navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
+                else if (Globals.GlobanConfig.UIConfig.Theme == "Dark")
+                    navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
+
                 #endregion
-                
+
                 logger.Info($"程序结束构造初始化");
             }
             catch (Exception ex)

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using ToolLib.Library.JsonLib;
 using ToolLib.Library.LogLib;
 
@@ -36,6 +37,17 @@ namespace DotnetGUI.Class
         public static void SaveAllConfig()
         {
             Json.WriteJson(ConfigPath, GlobanConfig);
+        }
+
+        /// <summary>
+        /// 设置主题
+        /// </summary>
+        public static void SetTheme()
+        {
+            if (GlobanConfig!.UIConfig!.Theme == "Light")
+                ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Light;                
+            else if (GlobanConfig!.UIConfig!.Theme == "Dark")
+                ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Dark;
         }
         #endregion
 

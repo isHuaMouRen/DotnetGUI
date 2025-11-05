@@ -25,6 +25,7 @@ namespace DotnetGUI.Class
             {
                 public Size WindowSize { get; set; }
                 public bool isFirstUse { get; set; }
+                public string? Theme {  get; set; }
             }
 
             public class DotNetConfig

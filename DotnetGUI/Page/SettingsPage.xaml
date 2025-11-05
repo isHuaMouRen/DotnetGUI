@@ -21,8 +21,11 @@
                 </Grid>
             </TabItem>
             <TabItem Header="程序设置">
-                <Grid>
-                    <Button x:Name="button_CheckUpdate" Content="检查更新" Margin="10,10,0,0" VerticalAlignment="Top" Click="button_CheckUpdate_Click"/>
+                <Grid Margin="10,10,10,10">
+                    <Button x:Name="button_CheckUpdate" Content="检查更新" VerticalAlignment="Top" Click="button_CheckUpdate_Click"/>
+                    <Label Content="主题:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,36,0,0" Height="32" VerticalContentAlignment="Center"/>
+                    <RadioButton x:Name="radioButton_Light" Content="明亮" Tag="Light" Margin="36,36,0,0" VerticalAlignment="Top" IsChecked="True" Click="RadioButton_Click"/>
+                    <RadioButton x:Name="radioButton_Dark" Content="暗黑" Tag="Dark" Margin="112,36,0,0" VerticalAlignment="Top" Click="RadioButton_Click"/>
 
                 </Grid>
             </TabItem>
