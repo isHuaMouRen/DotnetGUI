@@ -1,18 +1,4 @@
-﻿using ToolLib.Library.AutoStartLib;
-using ToolLib.Library.CmdLib;
-using ToolLib.Library.DownloaderLib;
-using ToolLib.Library.GdiToolLib;
-using ToolLib.Library.HashLib;
-using ToolLib.Library.HexLib;
-using ToolLib.Library.HookLib;
-using ToolLib.Library.HotkeyManagerLib;
-using ToolLib.Library.IniLib;
-using ToolLib.Library.InputLib;
-using ToolLib.Library.JsonLib;
-using ToolLib.Library.LogLib;
-using ToolLib.Library.MemoryLib;
-using ToolLib.Library.XmlLib;
-
+﻿using HuaZi.Library.Json;
 using DotnetGUI.Util;
 using ModernWpf.Controls;
 using System.Diagnostics;
@@ -371,7 +357,7 @@ namespace DotnetGUI
                     }));
                 }
 
-                #endregion
+                #endregion                
 
                 logger.Info($"程序初始化完毕");
             }

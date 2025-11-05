@@ -8,8 +8,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using ToolLib.Library.JsonLib;
-using ToolLib.Library.LogLib;
+using HuaZi.Library.Json;
+using HuaZi.Library.Logger;
+using System.Net.Http;
+using DotnetGUI.Util;
+using HuaZi.Library.Downloader;
+using System.Diagnostics;
 
 namespace DotnetGUI.Class
 {
@@ -18,7 +22,7 @@ namespace DotnetGUI.Class
         #region Var
         public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Indev 2.3.0.0";
+        public static readonly string AppVersion = "Alpha 1.0.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobalConfig = null;
 
@@ -57,6 +61,73 @@ namespace DotnetGUI.Class
                 ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Dark;
                 navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));
             }
+        }
+
+        public static async Task CheckUpdate(Action<string> action)
+        {
+            Globals.logger.Info($"开始检查更新...");
+
+            using (var client = new HttpClient())
+            {
+                string result = await client.GetStringAsync($"{Globals.UpdateRootUrl}latest.json");
+                JsonConfig.UpdateIndex.Root updateIndex = Json.ReadJson<JsonConfig.UpdateIndex.Root>(result);
+
+                Globals.logger.Info($"获得更新索引: {result}");
+                Globals.logger.Info($"最新版本: {updateIndex.latest_version}  当前版本: {Globals.AppVersion}");
+
+                if (updateIndex.latest_version == Globals.AppVersion)
+                {
+                    Globals.logger.Info($"无可用更新");
+                    await DialogManager.ShowDialogAsync(new ContentDialog
+                    {
+                        Title = "无可用更新",
+                        Content = $"您使用的是最新的 {updateIndex.latest_version} 版本, 无需更新",
+                        PrimaryButtonText = "确定",
+                        DefaultButton = ContentDialogButton.Primary
+                    });
+                }
+                else
+                {
+                    Globals.logger.Info($"发现可用更新");
+                    bool isUpdate = false;
+                    await DialogManager.ShowDialogAsync(new ContentDialog
+                    {
+                        Title = "发现可用更新",
+                        Content = $"现在可以更新到 {updateIndex.latest_version}\n\n是否更新?",
+                        PrimaryButtonText = "更新",
+                        CloseButtonText = "取消",
+                        DefaultButton = ContentDialogButton.Primary
+                    }, (() => isUpdate = true));
+
+                    if (isUpdate)
+                    {
+                        string savePath = System.IO.Path.Combine(Globals.TempPath!, "update.zip");
+                        Globals.logger.Info($"开始更新，保存位置: {savePath}");
+                        if (File.Exists(savePath))
+                            File.Delete(savePath);
+
+                        Globals.logger.Info($"开始下载任务...");
+                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => action($"{Math.Round(pgs, 2)}")), new CancellationToken());
+                        Globals.logger.Info($"下载任务结束");
+
+                        action("下载更新文件成功, 即将重启...");
+                        await Task.Delay(2000);
+
+                        Globals.logger.Info($"调用更新服务...");
+
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = System.IO.Path.Combine(Globals.ExecutePath!, "UpdateService.exe"),
+                            Arguments = $"-updatefile \"{savePath}\"",
+                            UseShellExecute = true
+                        });
+                        Globals.logger.Info($"程序退出(ExitCode: 0)");
+                        Environment.Exit(0);
+                    }
+                }
+            }
+
+            Globals.logger.Info($"检查更新结束");
         }
         #endregion
 

@@ -17,7 +17,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ToolLib.Library.JsonLib;
+using HuaZi.Library.Json;
 
 namespace DotnetGUI.Page
 {
