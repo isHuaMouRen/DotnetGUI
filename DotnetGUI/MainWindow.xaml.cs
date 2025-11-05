@@ -80,7 +80,7 @@ namespace DotnetGUI
                 if (!File.Exists(Globals.ConfigPath))
                 {
                     logger.Info($"未检测到配置文件，即将创建");
-                    Globals.GlobanConfig = new JsonConfig.Config.Root
+                    Globals.GlobalConfig = new JsonConfig.Config.Root
                     {
                         UIConfig = new JsonConfig.Config.UIConfig
                         {
@@ -98,11 +98,11 @@ namespace DotnetGUI
                 }
 
                 //读取
-                Globals.GlobanConfig = Json.ReadJson<JsonConfig.Config.Root>(Globals.ConfigPath);
+                Globals.GlobalConfig = Json.ReadJson<JsonConfig.Config.Root>(Globals.ConfigPath);
 
                 //应用
-                this.Width = Globals.GlobanConfig.UIConfig!.WindowSize.Width;
-                this.Height = Globals.GlobanConfig.UIConfig!.WindowSize.Height;
+                this.Width = Globals.GlobalConfig.UIConfig!.WindowSize.Width;
+                this.Height = Globals.GlobalConfig.UIConfig!.WindowSize.Height;
 
                 navView.SelectedItem = navViewItem_Home;
 
@@ -191,11 +191,11 @@ namespace DotnetGUI
 
                 #region OOBE
 
-                if (Globals.GlobanConfig!.UIConfig!.isFirstUse)
+                if (Globals.GlobalConfig!.UIConfig!.isFirstUse)
                 {
                     logger.Info($"检测到首次使用，开始OOBE环节");
                     bool isTutorialDone = false;
-                    int totalStep = 2;
+                    int totalStep = 3;
 
                     while (!isTutorialDone)
                     {
@@ -208,10 +208,42 @@ namespace DotnetGUI
                             DefaultButton = ContentDialogButton.Primary
                         });
 
+                        //主题
+                        var radioButtonLight = new RadioButton
+                        {
+                            Content = "明亮",
+                            IsChecked = true,
+                            Margin = new Thickness(0, 0, 0, 10)
+                        };
+                        radioButtonLight.Click += ((s, e) => { Globals.GlobalConfig.UIConfig.Theme = "Light"; Globals.SetTheme(navView); });
+                        var radioButtonDark = new RadioButton
+                        {
+                            Content = "暗黑",
+                            Margin = new Thickness(0, 0, 0, 10)
+                        };
+                        radioButtonDark.Click += ((s, e) => { Globals.GlobalConfig.UIConfig.Theme = "Dark"; Globals.SetTheme(navView); });
+                        await DialogManager.ShowDialogAsync(new ContentDialog
+                        {
+                            Title = $"✨ 选择主题 (1/{totalStep})",
+                            Content = new StackPanel
+                            {
+                                Children =
+                                {
+                                    radioButtonLight,
+                                    radioButtonDark,
+                                    new Label
+                                    {
+                                        Content=$"选择一个你喜欢的主题吧！"
+                                    }
+                                }
+                            },
+                            PrimaryButtonText = "下一步"
+                        });
+
                         //工作目录
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
-                            Title = $"💾 配置工作目录 (1/{totalStep})",
+                            Title = $"💾 配置工作目录 (2/{totalStep})",
                             Content = $"选择一个目录，作为您的工作目录，创建项目、生成和运行项目都将在此执行",
                             PrimaryButtonText = "选择",
                             DefaultButton = ContentDialogButton.Primary
@@ -230,12 +262,12 @@ namespace DotnetGUI
                                 {
                                     await DialogManager.ShowDialogAsync(new ContentDialog
                                     {
-                                        Title = $"💾 配置工作目录 (1/{totalStep})",
+                                        Title = $"💾 配置工作目录 (2/{totalStep})",
                                         Content = $"干得好！ \"{folderDialog.FolderName}\"真是一个完美的目录！让我们进行下一步",
                                         PrimaryButtonText = "下一步",
                                         DefaultButton = ContentDialogButton.Primary
                                     });
-                                    Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
+                                    Globals.GlobalConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
                                     Globals.SaveAllConfig();
                                     isSelectDone = true;
                                 }
@@ -251,7 +283,7 @@ namespace DotnetGUI
                                     }, (() =>
                                     {
                                         Directory.CreateDirectory(folderDialog.FolderName);
-                                        Globals.GlobanConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
+                                        Globals.GlobalConfig.DotnetConfig!.WorkingDirectory = folderDialog.FolderName;
                                         Globals.SaveAllConfig();
                                         isSelectDone = true;
                                     }));
@@ -272,7 +304,7 @@ namespace DotnetGUI
                         // .NET
                         await DialogManager.ShowDialogAsync(new ContentDialog
                         {
-                            Title = $"🛠 配置.NET (2/{totalStep})",
+                            Title = $"🛠 配置.NET (3/{totalStep})",
                             Content = $"接下来将要配置.NET SDK ，这是整个程序的核心，全部命令都要依赖.NET SDK\n\n你可以立即前往官网下载，也可以在初始化流程结束后到此软件的下载中心下载",
                             PrimaryButtonText = "下一步",
                             SecondaryButtonText = "前往官网下载",
@@ -296,7 +328,7 @@ namespace DotnetGUI
                             DefaultButton = ContentDialogButton.Primary
                         });
 
-                        Globals.GlobanConfig.UIConfig.isFirstUse = false;
+                        Globals.GlobalConfig.UIConfig.isFirstUse = false;
                         Globals.SaveAllConfig();
 
                         isTutorialDone = true;
@@ -309,14 +341,14 @@ namespace DotnetGUI
 
                 #region 工作目录可用性
 
-                if (!Directory.Exists(Globals.GlobanConfig.DotnetConfig!.WorkingDirectory))
+                if (!Directory.Exists(Globals.GlobalConfig.DotnetConfig!.WorkingDirectory))
                 {
                     logger.Warn("工作目录不可用!");
 
                     await DialogManager.ShowDialogAsync(new ContentDialog
                     {
                         Title = "警告",
-                        Content = $"工作目录 \"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\" 不可用！\n\n这可能导致程序频繁报错！",
+                        Content = $"工作目录 \"{Globals.GlobalConfig.DotnetConfig.WorkingDirectory}\" 不可用！\n\n这可能导致程序频繁报错！",
                         PrimaryButtonText = "更换",
                         SecondaryButtonText = "创建",
                         CloseButtonText = "忽略",
@@ -330,12 +362,12 @@ namespace DotnetGUI
                         };
                         if (dialog.ShowDialog() == true)
                         {
-                            Globals.GlobanConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
+                            Globals.GlobalConfig.DotnetConfig.WorkingDirectory = dialog.FolderName;
                             Globals.SaveAllConfig();
                         }
                     }), (() =>
                     {
-                        Directory.CreateDirectory(Globals.GlobanConfig.DotnetConfig.WorkingDirectory!);
+                        Directory.CreateDirectory(Globals.GlobalConfig.DotnetConfig.WorkingDirectory!);
                     }));
                 }
 
@@ -384,7 +416,7 @@ namespace DotnetGUI
         {
             try
             {
-                Globals.GlobanConfig!.UIConfig!.WindowSize = new Size(this.Width, this.Height);
+                Globals.GlobalConfig!.UIConfig!.WindowSize = new Size(this.Width, this.Height);
                 Globals.SaveAllConfig();
             }
             catch (Exception ex)

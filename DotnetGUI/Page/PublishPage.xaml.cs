@@ -64,7 +64,7 @@ namespace DotnetGUI.Page
                 Globals.logger.Info($"开始扫描项目文件");
                 projFiles?.Clear();
 
-                await ScanFile(Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory!);
+                await ScanFile(Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory!);
                 if (projFiles?.Count > 0)
                 {
                     comboBox_ProjName.Items.Clear();
@@ -210,7 +210,7 @@ namespace DotnetGUI.Page
                     StandardErrorEncoding = Encoding.UTF8,
                     StandardOutputEncoding = Encoding.UTF8,
                     CreateNoWindow = true,
-                    WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory
+                    WorkingDirectory = Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory
                 });
                 
                 Globals.logger.Info($"==========[Dotnet开始运行]==========");
@@ -245,7 +245,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"已在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!)}\"发布项目",
+                        Content = $"已在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobalConfig.DotnetConfig.WorkingDirectory!)}\"发布项目",
                         PrimaryButtonText = "定位",
                         CloseButtonText = "确定",
                         DefaultButton = ContentDialogButton.Primary
@@ -254,7 +254,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!),
+                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobalConfig.DotnetConfig.WorkingDirectory!),
                             UseShellExecute = true
                         });
                     }));
@@ -264,7 +264,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"尝试在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!)}\"发布项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
+                        Content = $"尝试在\"{(radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobalConfig.DotnetConfig.WorkingDirectory!)}\"发布项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
                         PrimaryButtonText = "确定",
                         SecondaryButtonText = "定位",
                         DefaultButton = ContentDialogButton.Primary
@@ -273,7 +273,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobanConfig.DotnetConfig.WorkingDirectory!),
+                            FileName = (radioButton_OutputCustom.IsChecked == true ? textBox_Output.Text : Globals.GlobalConfig.DotnetConfig.WorkingDirectory!),
                             UseShellExecute = true
                         });
                     }));

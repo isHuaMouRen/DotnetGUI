@@ -47,13 +47,13 @@ namespace DotnetGUI.Page
             try
             {
                 //workDirectory
-                textBox_WorkingPath.Text = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory;
+                textBox_WorkingPath.Text = Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory;
 
                 //Theme
                 radioButton_Light.IsChecked = false;radioButton_Dark.IsChecked = false;
-                if (Globals.GlobanConfig.UIConfig!.Theme == "Light")
+                if (Globals.GlobalConfig.UIConfig!.Theme == "Light")
                     radioButton_Light.IsChecked = true;
-                else if (Globals.GlobanConfig.UIConfig!.Theme == "Dark")
+                else if (Globals.GlobalConfig.UIConfig!.Theme == "Dark")
                     radioButton_Dark.IsChecked = true;
 
             }
@@ -113,7 +113,7 @@ namespace DotnetGUI.Page
                         {
                             Globals.logger.Info($"工作目录: {dialog.FolderName}");
                             textBox_WorkingPath.Text = dialog.FolderName;
-                            Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory = dialog.FolderName;
+                            Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory = dialog.FolderName;
                             Globals.SaveAllConfig();
                             isWhile = false;
                         }));
@@ -281,7 +281,7 @@ namespace DotnetGUI.Page
         {
             if (sender is RadioButton radioButton && radioButton.IsChecked == true) 
             {
-                Globals.GlobanConfig!.UIConfig!.Theme = (string)radioButton.Tag;
+                Globals.GlobalConfig!.UIConfig!.Theme = (string)radioButton.Tag;
                 Globals.SaveAllConfig();
                 Globals.SetTheme(((NavigationView)(Window.GetWindow(this).FindName("navView"))));
             }

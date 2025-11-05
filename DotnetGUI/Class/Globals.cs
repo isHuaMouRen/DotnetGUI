@@ -20,7 +20,7 @@ namespace DotnetGUI.Class
         public static readonly string? TempPath = Path.GetTempPath();
         public static readonly string AppVersion = "Indev 2.3.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
-        public static JsonConfig.Config.Root? GlobanConfig = null;
+        public static JsonConfig.Config.Root? GlobalConfig = null;
 
         public static JsonConfig.DotnetDownloadIndex.Root DotnetIndex = null!;
         public static JsonConfig.DotnetVersionInfo.Root DotnetVersionInfo = null!;
@@ -38,7 +38,7 @@ namespace DotnetGUI.Class
         /// </summary>
         public static void SaveAllConfig()
         {
-            Json.WriteJson(ConfigPath, GlobanConfig);
+            Json.WriteJson(ConfigPath, GlobalConfig);
         }
 
         /// <summary>
@@ -46,12 +46,12 @@ namespace DotnetGUI.Class
         /// </summary>
         public static void SetTheme(NavigationView navView)
         {
-            if (GlobanConfig!.UIConfig!.Theme == "Light")
+            if (GlobalConfig!.UIConfig!.Theme == "Light")
             {
                 ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Light;
                 navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             }
-            else if (GlobanConfig!.UIConfig!.Theme == "Dark")
+            else if (GlobalConfig!.UIConfig!.Theme == "Dark")
             {
                 ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Dark;
                 navView.Background = new SolidColorBrush(Color.FromRgb(30, 30, 30));

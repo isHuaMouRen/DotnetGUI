@@ -183,7 +183,7 @@ namespace DotnetGUI.Page
                 string projName = textBox_Name.Text;
                 if (string.IsNullOrEmpty(projName)) throw new Exception("必须传入项目名");
 
-                string arg = $"{template} {force} {language} -n {projName} -o {Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory}";
+                string arg = $"{template} {force} {language} -n {projName} -o {Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory}";
 
                 Globals.logger.Info($"参数: dotnet new {arg}");
 
@@ -230,7 +230,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"已在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"创建项目",
+                        Content = $"已在\"{Globals.GlobalConfig.DotnetConfig.WorkingDirectory}\"创建项目",
                         PrimaryButtonText = "定位",
                         CloseButtonText = "确定",
                         DefaultButton = ContentDialogButton.Primary
@@ -239,7 +239,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
+                            FileName = Globals.GlobalConfig.DotnetConfig.WorkingDirectory,
                             UseShellExecute = true
                         });
                     }));
@@ -249,7 +249,7 @@ namespace DotnetGUI.Page
                     var dialog = new ContentDialog
                     {
                         Title = "执行完毕",
-                        Content = $"尝试在\"{Globals.GlobanConfig.DotnetConfig.WorkingDirectory}\"创建项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
+                        Content = $"尝试在\"{Globals.GlobalConfig.DotnetConfig.WorkingDirectory}\"创建项目，但在执行过程中发生以下错误:\n\n{errorInfo}",
                         PrimaryButtonText = "确定",
                         SecondaryButtonText = "定位",
                         DefaultButton = ContentDialogButton.Primary
@@ -258,7 +258,7 @@ namespace DotnetGUI.Page
                     {
                         Process.Start(new ProcessStartInfo
                         {
-                            FileName = Globals.GlobanConfig.DotnetConfig.WorkingDirectory,
+                            FileName = Globals.GlobalConfig.DotnetConfig.WorkingDirectory,
                             UseShellExecute = true
                         });
                     }));

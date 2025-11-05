@@ -55,7 +55,7 @@ namespace DotnetGUI.Page
                     {
                         FileName = "dotnet",
                         Arguments = args,
-                        WorkingDirectory = Globals.GlobanConfig!.DotnetConfig!.WorkingDirectory,
+                        WorkingDirectory = Globals.GlobalConfig!.DotnetConfig!.WorkingDirectory,
                         RedirectStandardError = true,
                         RedirectStandardOutput = true,
                         UseShellExecute = false,
