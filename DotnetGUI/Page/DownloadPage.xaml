@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="DownloadPage" Loaded="Page_Loaded">
 
-    <Grid Background="White">
+    <Grid>
         <Grid x:Name="grid_Main">
             <ListBox x:Name="listBox" Margin="10,86,10,10" SelectionChanged="listBox_SelectionChanged"/>
             <Label x:Name="label_Version" Content="ChannelVersion" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" FontSize="20" FontWeight="Bold"/>

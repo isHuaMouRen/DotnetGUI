@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ConsolePage" Loaded="Page_Loaded">
 
-    <Grid Background="White">
+    <Grid>
         <TextBox x:Name="textBox_Output" Margin="10,46,10,47" VerticalScrollBarVisibility="Auto" IsReadOnly="True" TextWrapping="WrapWithOverflow" HorizontalScrollBarVisibility="Auto"/>
         <Button x:Name="button_Send" Content="发送" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="button_Send_Click"/>
         <TextBox x:Name="textBox_Command" Margin="69,0,61,10" TextWrapping="Wrap" d:LayoutOverrides="HorizontalAlignment" VerticalAlignment="Bottom" PreviewKeyDown="textBox_Command_KeyDown"/>

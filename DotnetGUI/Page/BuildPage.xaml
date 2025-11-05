@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="BuildPage" Loaded="Page_Loaded">
 
-    <Grid Background="White">
+    <Grid>
         <Grid x:Name="grid_Main" Margin="10,10,10,10">
             <Label Content="Build" VerticalAlignment="Top" HorizontalAlignment="Left" FontSize="30" FontWeight="Bold"/>
             <Label Content="生成项目、解决方案或基于文件的应用及其所有依赖项。" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF646464" Margin="0,43,0,0"/>

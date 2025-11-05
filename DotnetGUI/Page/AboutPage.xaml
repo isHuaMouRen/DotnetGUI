@@ -9,7 +9,7 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="AboutPage">
 
-    <Grid Background="White" Cursor="Hand">
+    <Grid>
         <Viewbox Width="100" Height="100" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">
             <Canvas Width="1024" Height="1024" VerticalAlignment="Top" Margin="20,20,0,0" RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left">
                 <Path Fill="#512bd4"
