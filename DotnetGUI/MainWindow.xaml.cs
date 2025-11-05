@@ -32,6 +32,7 @@ using System.IO;
 using DotnetGUI.Class;
 using DotnetGUI.Page;
 using Microsoft.Win32;
+using ModernWpf.Media.Animation;
 
 namespace DotnetGUI
 {
@@ -41,19 +42,11 @@ namespace DotnetGUI
     public partial class MainWindow : Window
     {
         #region Obj
-        //预加载Page
-        public ModernWpf.Controls.Page _homePage = new HomePage();
-        public ModernWpf.Controls.Page _downloadPage = new DownloadPage();
-        public ModernWpf.Controls.Page _consolePage = new ConsolePage();
-        public ModernWpf.Controls.Page _newPage = new NewPage();
-        public ModernWpf.Controls.Page _buildPage = new BuildPage();
-        public ModernWpf.Controls.Page _publishPage = new PublishPage();
-
-        public ModernWpf.Controls.Page _aboutPage = new AboutPage();
-        public ModernWpf.Controls.Page _settingsPage = new SettingsPage();
+        public DrillInNavigationTransitionInfo frameAnimation = new DrillInNavigationTransitionInfo();
         #endregion
 
         #region Var
+        public Dictionary<string, Type> PageMap = new Dictionary<string, Type>();
         #endregion
 
         #region Func
@@ -62,6 +55,20 @@ namespace DotnetGUI
             try
             {
                 Globals.logger.Info($"程序开始构造初始化");
+
+                #region 预加载Pages
+                void AddPage(Type t) => PageMap.Add(t.Name, t);
+                AddPage(typeof(HomePage));
+                AddPage(typeof(DownloadPage));
+                AddPage(typeof(ConsolePage));
+                AddPage(typeof(NewPage));
+                AddPage(typeof(BuildPage));
+                AddPage(typeof(PublishPage));
+                AddPage(typeof(AboutPage));
+                AddPage(typeof(SettingsPage));
+
+                #endregion
+
                 #region 读写配置
                 //如没有就写入
                 if (!File.Exists(Globals.ConfigPath))
@@ -92,6 +99,7 @@ namespace DotnetGUI
 
                 navView.SelectedItem = navViewItem_Home;
                 #endregion
+                
                 Globals.logger.Info($"程序结束构造初始化");
             }
             catch (Exception ex)
@@ -350,34 +358,8 @@ namespace DotnetGUI
                 if (navView.SelectedItem is NavigationViewItem item)
                 {
                     Globals.logger.Info($"用户选择 {item.Content} 页");
-                    //Home
-                    if (item == navViewItem_Home)
-                        frame_Navv.Navigate(_homePage);
-                    //Download
-                    else if (item == navViewItem_Download)
-                        frame_Navv.Navigate(_downloadPage);
-                    //Console
-                    else if (item == navViewItem_Console)
-                        frame_Navv.Navigate(_consolePage);
-                    //New
-                    else if (item == navViewItem_New)
-                        frame_Navv.Navigate(_newPage);
-                    //Build
-                    else if (item == navViewItem_Build)
-                        frame_Navv.Navigate(_buildPage);
-                    //Publish
-                    else if (item == navViewItem_Publish)
-                        frame_Navv.Navigate(_publishPage);
 
-                    //About
-                    else if (item == navViewItem_About)
-                        frame_Navv.Navigate(_aboutPage);
-                    //Settings
-                    else if (item == navViewItem_Settings)
-                        frame_Navv.Navigate(_settingsPage);
-                    else
-                        throw new Exception("内部错误: 不存在的NavView项");
-
+                    frame_Navv.Navigate(PageMap[(string)item.Tag], null, frameAnimation);
                 }
                 else
                     throw new Exception("非法的值");
