@@ -121,7 +121,6 @@ namespace DotnetGUI.Page
         //遍历项目文件夹
         public async Task ScanFile(string path)
         {
-            Globals.logger.Info($"创建遍历任务...");
             await Task.Run(async () =>
             {
                 string[] files = Directory.GetFiles(path);
@@ -133,7 +132,6 @@ namespace DotnetGUI.Page
                 foreach (var dir in dirs)
                     await ScanFile(dir);
             });
-            Globals.logger.Info($"遍历任务结束");
         }
         #endregion
 

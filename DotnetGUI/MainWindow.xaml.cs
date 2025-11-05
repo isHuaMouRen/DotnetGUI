@@ -70,7 +70,7 @@ namespace DotnetGUI
 
                 foreach (var item in PageMap)
                 {
-
+                    logger.Info($"已预加载Page: {item}");
                 }
 
                 #endregion

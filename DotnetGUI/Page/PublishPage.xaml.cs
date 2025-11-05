@@ -70,7 +70,7 @@ namespace DotnetGUI.Page
                     comboBox_ProjName.Items.Clear();
                     foreach (var item in projFiles)
                     {
-                        Globals.logger.Info($"{item}");
+                        Globals.logger.Info($"发现项目文件: {item}");
                         comboBox_ProjName.Items.Add(item);
                     }
                     comboBox_ProjName.SelectedIndex = 0;
@@ -114,7 +114,6 @@ namespace DotnetGUI.Page
         //遍历项目文件夹
         public async Task ScanFile(string path)
         {
-            Globals.logger.Info($"创建遍历任务");
             await Task.Run(async () =>
             {
                 string[] files = Directory.GetFiles(path);
@@ -126,7 +125,6 @@ namespace DotnetGUI.Page
                 foreach (var dir in dirs)
                     await ScanFile(dir);
             });
-            Globals.logger.Info($"遍历任务结束");
         }
 
         #endregion
