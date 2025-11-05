@@ -20,6 +20,7 @@ using DotnetGUI.Page;
 using Microsoft.Win32;
 using ModernWpf.Media.Animation;
 using static DotnetGUI.Class.Globals;
+using HuaZi.Library.Hash;
 
 namespace DotnetGUI
 {

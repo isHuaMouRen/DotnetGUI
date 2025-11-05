@@ -14,6 +14,7 @@ using System.Net.Http;
 using DotnetGUI.Util;
 using HuaZi.Library.Downloader;
 using System.Diagnostics;
+using HuaZi.Library.Hash;
 
 namespace DotnetGUI.Class
 {
@@ -107,8 +108,25 @@ namespace DotnetGUI.Class
                             File.Delete(savePath);
 
                         Globals.logger.Info($"开始下载任务...");
-                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => action($"{Math.Round(pgs, 2)}")), new CancellationToken());
+                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => action($"更新文件下载中 {Math.Round(pgs, 2)}% ...")), new CancellationToken());
                         Globals.logger.Info($"下载任务结束");
+
+                        string fileHash = await Hash.FileSHA256Async(savePath);
+                        logger.Info($"文件SHA256: {fileHash}\n服务器发送的Hash: {updateIndex}");
+                        if (!string.Equals(fileHash,updateIndex.hash,StringComparison.OrdinalIgnoreCase))
+                        {
+                            bool isReturn = false;
+                            await DialogManager.ShowDialogAsync(new ContentDialog
+                            {
+                                Title = $"警告",
+                                Content = $"文件效验不通过，哈希值与服务器上的不一致，下载到的文件可能已经损坏。",
+                                PrimaryButtonText = "取消更新",
+                                SecondaryButtonText = "忽略",
+                                DefaultButton = ContentDialogButton.Secondary
+                            }, (() => isReturn = true));
+                            if (isReturn)
+                                return;
+                        }
 
                         action("下载更新文件成功, 即将重启...");
                         await Task.Delay(2000);

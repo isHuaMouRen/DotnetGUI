@@ -109,6 +109,7 @@ namespace DotnetGUI.Class
             public class Root
             {
                 public string? latest_version { get; set; }
+                public string? hash { get; set; }
             }
         }
     }
