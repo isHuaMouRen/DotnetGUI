@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:DotnetGUI"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         mc:Ignorable="d"
+        ui:WindowHelper.UseModernWindowStyle="True"
         Title="Dotnet GUI" Height="450" Width="800" Loaded="MainWindow_Loaded" SizeChanged="Window_SizeChanged" WindowStartupLocation="CenterScreen" Icon="/Assets/icon/icon.ico">
     <Grid>
         <ui:NavigationView x:Name="navView" IsBackButtonVisible="Visible" IsSettingsVisible="False" SelectionChanged="NavigationView_SelectionChanged" BackRequested="navView_BackRequested" IsBackEnabled="True">
