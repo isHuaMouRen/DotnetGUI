@@ -46,8 +46,9 @@ namespace DotnetGUI.Class
         /// </summary>
         public static void SetTheme(NavigationView navView)
         {
+            logger.Info($"设置主题: {GlobalConfig!.UIConfig!.Theme}");
             if (GlobalConfig!.UIConfig!.Theme == "Light")
-            {
+            {                
                 ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Light;
                 navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             }
