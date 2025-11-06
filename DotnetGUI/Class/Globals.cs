@@ -64,6 +64,11 @@ namespace DotnetGUI.Class
             }
         }
 
+        /// <summary>
+        /// 检查更新
+        /// </summary>
+        /// <param name="action">信息回调</param>
+        /// <returns>无</returns>
         public static async Task CheckUpdate(Action<string> action)
         {
             Globals.logger.Info($"开始检查更新...");
