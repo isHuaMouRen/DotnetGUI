@@ -52,6 +52,8 @@ namespace DotnetGUI
                 AddPage(typeof(NewPage));
                 AddPage(typeof(BuildPage));
                 AddPage(typeof(PublishPage));
+                AddPage(typeof(RunPage));
+
                 AddPage(typeof(AboutPage));
                 AddPage(typeof(SettingsPage));
 
