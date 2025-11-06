@@ -55,7 +55,7 @@ namespace DotnetGUI.Class
             if (GlobalConfig!.UIConfig!.Theme == "Light")
             {                
                 ModernWpf.ThemeManager.Current.ApplicationTheme = ModernWpf.ApplicationTheme.Light;
-                navView.Background = new SolidColorBrush(Color.FromRgb(220, 220, 220));
+                navView.Background = new SolidColorBrush(Color.FromRgb(255, 255, 255));
             }
             else if (GlobalConfig!.UIConfig!.Theme == "Dark")
             {
