@@ -1,7 +1,8 @@
 # Change Log
 
 ## Alpha 1.2.0.0
-> 此版本引入了最新的UI库，更新至**FluentUI**风格, 不再是之前的Windows10样式ui!
+> 此版本引入了最新的UI库，更新至**FluentUI**风格, 不再是之前的Windows10样式ui!<br>
+> 并新增了 `Run` 模块，无需编译即可快速调试程序
 ### 更新
 - 更新依赖库 `ModernWpfui` 至最新预览版
 - 更新 `运行` 模块，对于.NET命令 `dotnet run`
