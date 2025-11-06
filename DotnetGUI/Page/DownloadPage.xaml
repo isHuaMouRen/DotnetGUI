@@ -15,7 +15,7 @@
             <Label x:Name="label_Version" Content="ChannelVersion" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" FontSize="20" FontWeight="Bold"/>
             <Label x:Name="label_SubVersion" Content="最新版本: LatestVersion" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,40,0,0" FontSize="14"/>
             <Label x:Name="label_ReleaseDate" Content="发布日期: ReleaseDate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,63,0,0" FontSize="14"/>
-            <Button x:Name="button_Download" Content="下载" Margin="0,40,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="184" Height="41" FontSize="20" IsEnabled="False" Click="button_Download_Click"/>
+            <Button x:Name="button_Download" Content="下载" Margin="0,50,10,0" VerticalAlignment="Top" HorizontalAlignment="Right" FontSize="14" IsEnabled="False" Click="button_Download_Click"/>
         </Grid>
         <ui:ProgressRing x:Name="progressRing_Load" IsActive="True" Width="50" Height="50"/>
         <Label x:Name="label_Load" Content="加载中..." VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,80,0,0"/>
