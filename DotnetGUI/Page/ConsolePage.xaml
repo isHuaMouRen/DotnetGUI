@@ -12,11 +12,11 @@
     <Grid>
         <TextBox x:Name="textBox_Output" Margin="10,46,10,47" VerticalScrollBarVisibility="Auto" IsReadOnly="True" TextWrapping="WrapWithOverflow" HorizontalScrollBarVisibility="Auto"/>
         <Button x:Name="button_Send" Content="发送" VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="0,0,10,10" Click="button_Send_Click"/>
-        <TextBox x:Name="textBox_Command" Margin="69,0,61,10" TextWrapping="Wrap" d:LayoutOverrides="HorizontalAlignment" VerticalAlignment="Bottom" PreviewKeyDown="textBox_Command_KeyDown"/>
+        <TextBox x:Name="textBox_Command" Margin="69,408,67,0" TextWrapping="Wrap" d:LayoutOverrides="HorizontalAlignment" VerticalAlignment="Top" PreviewKeyDown="textBox_Command_KeyDown"/>
         <Label Content="dotnet " VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="10,0,0,10" Height="31" VerticalContentAlignment="Center" Width="54"/>
         <Button x:Name="button_ShowHelp" Content="查看全部帮助" Margin="74,10,0,0" VerticalAlignment="Top" Click="HelpButton_Click"/>
         <Label Content="快捷操作:" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0" Height="31" VerticalContentAlignment="Center"/>
-        <Button x:Name="button_ShowSDKandRt" Content="查看可用SDK/Runtime" Margin="181,10,0,0" VerticalAlignment="Top" Click="HelpButton_Click"/>
+        <Button x:Name="button_ShowSDKandRt" Content="查看可用SDK/Runtime" Margin="187,10,0,0" VerticalAlignment="Top" Click="HelpButton_Click"/>
 
     </Grid>
 </ui:Page>
