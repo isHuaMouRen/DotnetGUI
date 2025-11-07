@@ -154,8 +154,8 @@ namespace DotnetGUI.Page
                             button_Cancel.Visibility = Visibility.Visible;
                             
                             Globals.logger.Info($"开始执行下载任务...");
-                            
-                            await Downloader.DownloadFileAsync(url, savePath, ((p) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ..."; }), cts.Token);
+
+                            await Downloader.DownloadFileAsync(url, savePath, ((p, s) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ({Math.Round(s / 1024, 2)}MB/S) ..."; }), cts.Token);
                             
                             Globals.logger.Info($"下载完成");
                             

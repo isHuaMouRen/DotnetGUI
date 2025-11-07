@@ -113,7 +113,7 @@ namespace DotnetGUI.Class
                             File.Delete(savePath);
 
                         Globals.logger.Info($"开始下载任务...");
-                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs) => action($"更新文件下载中 {Math.Round(pgs, 2)}% ...")), new CancellationToken());
+                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs, spd) => action($"更新文件下载中 {Math.Round(pgs, 2)}% ({Math.Round(pgs / 1024, 2)}MB/S) ...")), new CancellationToken());
                         Globals.logger.Info($"下载任务结束");
 
                         string fileHash = await Hash.FileSHA256Async(savePath);
