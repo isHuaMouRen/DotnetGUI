@@ -33,7 +33,7 @@ namespace DotnetGUI.Page
     public partial class Download_InfoPage : ModernWpf.Controls.Page
     {
         #region Obj
-        public CancellationTokenSource cts = new CancellationTokenSource();
+        public Downloader downloader = null!;
         #endregion
 
         #region Var
@@ -152,13 +152,41 @@ namespace DotnetGUI.Page
 
                             StartLoad();
                             button_Cancel.Visibility = Visibility.Visible;
-                            
+
                             Globals.logger.Info($"开始执行下载任务...");
 
-                            await Downloader.DownloadFileAsync(url, savePath, ((p, s) => { label_Load.Content = $"下载中 {Math.Round(p, 2)}% ({Math.Round(s / 1024, 2)}MB/S) ..."; }), cts.Token);
-                            
+                            bool isDownloadDone = false;
+
+                            downloader = new Downloader
+                            {
+                                Url = url,
+                                SavePath = savePath,
+                                Progress = ((p, s) =>
+                                {
+                                    label_Load.Content = $"下载中 {Math.Round(p, 2)}% ({Math.Round(s / 1024, 2)}MB/S) ...";
+                                }),
+                                Completed = ((s, e) =>
+                                {
+                                    if (s)
+                                        isDownloadDone = true;
+                                    else if (e == "已取消")
+                                    {
+                                        button_Cancel.Visibility = Visibility.Hidden;
+                                        EndLoad();
+                                        return;
+                                    }
+                                    else
+                                        throw new Exception(e);
+                                })
+                            };
+                            downloader.StartDownload();
+
+                            while (!isDownloadDone)
+                                await Task.Delay(100);
+
+
                             Globals.logger.Info($"下载完成");
-                            
+
                             label_Load.Content = "执行安装程序...";
 
                             var process = new Process();
@@ -203,22 +231,16 @@ namespace DotnetGUI.Page
                             EndLoad();
                         }
                     }
-                    catch (OperationCanceledException)
-                    {
-                        button_Cancel.Visibility = Visibility.Hidden;
-                        EndLoad();
-                    }
                     catch (Exception ex)
                     {
-                        
                         ErrorReportDialog.Show("发生错误", "下载.NET发生错误", ex);
-                    }                    
+                    }
                 }));
 
-            }            
+            }
             catch (Exception ex)
             {
-                
+                EndLoad();
                 ErrorReportDialog.Show("发生错误", "在下载.NET时发生错误", ex);
             }
         }
@@ -238,8 +260,8 @@ namespace DotnetGUI.Page
                 PrimaryButtonText = "确定",
                 SecondaryButtonText = "取消",
                 DefaultButton = ContentDialogButton.Primary
-            }, (() => { cts?.Cancel(); Globals.logger.Info($"用户取消下载"); }));
-            
+            }, (() => { downloader.StopDownload(); Globals.logger.Info($"用户取消下载"); }));
+
         }
     }
 }

@@ -15,6 +15,7 @@ using DotnetGUI.Util;
 using HuaZi.Library.Downloader;
 using System.Diagnostics;
 using HuaZi.Library.Hash;
+using System.Runtime.Serialization;
 
 namespace DotnetGUI.Class
 {
@@ -23,7 +24,7 @@ namespace DotnetGUI.Class
         #region Var
         public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Release 1.0.0.0 Preview.1";
+        public static readonly string AppVersion = "Release 1.0.0.0 Preview.2";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobalConfig = null;
 
@@ -35,6 +36,8 @@ namespace DotnetGUI.Class
 
         #region Obj
         public static Logger logger = new Logger(Path.Combine(ExecutePath!, "log"));
+
+        private static Downloader downloader = null!;
         #endregion
 
         #region Func
@@ -113,7 +116,26 @@ namespace DotnetGUI.Class
                             File.Delete(savePath);
 
                         Globals.logger.Info($"开始下载任务...");
-                        await Downloader.DownloadFileAsync($"{Globals.UpdateRootUrl}update.zip", savePath, ((pgs, spd) => action($"更新文件下载中 {Math.Round(pgs, 2)}% ({Math.Round(pgs / 1024, 2)}MB/S) ...")), new CancellationToken());
+                        bool isDownloadDone = false;
+                        downloader = new Downloader
+                        {
+                            Url = $"{UpdateRootUrl}update.zip",
+                            SavePath = savePath,
+                            Progress = ((p, s) => action($"更新文件下载中 {Math.Round(p, 2)}% ({Math.Round(s / 1024, 2)}MB/S) ...")),
+                            Completed = ((s, e) =>
+                            {
+                                if (s)
+                                    isDownloadDone = true;
+                                else
+                                    ErrorReportDialog.Show($"发生错误", "下载时发生错误", new Exception(e));
+
+                            })
+                        };
+                        downloader.StartDownload();
+
+                        while (!isDownloadDone)
+                            await Task.Delay(100);
+
                         Globals.logger.Info($"下载任务结束");
 
                         string fileHash = await Hash.FileSHA256Async(savePath);
