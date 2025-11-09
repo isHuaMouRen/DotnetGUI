@@ -24,7 +24,7 @@ namespace DotnetGUI.Class
         #region Var
         public static readonly string? ExecutePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         public static readonly string? TempPath = Path.GetTempPath();
-        public static readonly string AppVersion = "Release 1.0.0.0 Preview.2";
+        public static readonly string AppVersion = "Release 1.0.0.0";
         public static readonly string ConfigPath = $"{ExecutePath}\\config.json";
         public static JsonConfig.Config.Root? GlobalConfig = null;
 
